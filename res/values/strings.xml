@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">TranslatePhoto</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_top">TopActivity</string>
+    <string name="banner_ad_unit_id">ca-app-pub-2117529455454871/3202717542</string>
+    <string name="msg_your_time">Your time : %s</string>
+    <string name="congratulate">Congratulate! You have new best time!</string>
+    <string name="msg_you_done">You are done!</string>
+    <string name="cancel">Cancel</string>
+    <string name="save">Save</string>
+    <string name="your_name">Your name:</string>
+    <string name="choose_photo">Choose a photo</string>
+    <string name="title_activity_high_score">HighScoreActivity</string>
+    <string name="title_activity_select_photo">SelectPhotoActivity</string>
+
+</resources>
