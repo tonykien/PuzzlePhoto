@@ -14,5 +14,6 @@
     <string name="choose_photo">Choose a photo</string>
     <string name="title_activity_high_score">HighScoreActivity</string>
     <string name="title_activity_select_photo">SelectPhotoActivity</string>
+    <string name="title_activity_crop_photo">CropPhotoActivity</string>
 
 </resources>

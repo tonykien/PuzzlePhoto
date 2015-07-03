@@ -1,0 +1,63 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/darker_gray"
+    tools:context="${relativePackage}.${activityClass}" >
+
+    <RelativeLayout
+        android:id="@+id/rlTopBar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/top_bar_height_crop_screen"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:background="#00838f" >
+
+        <Button
+            android:id="@+id/button1"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="8dp"
+            android:text="Cancel" />
+
+        <Button
+            android:id="@+id/btnDone"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="8dp"
+            android:onClick="onBtnDoneClick"
+            android:text="Done" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/rlTopBar" >
+
+        <ImageView
+            android:id="@+id/ivPhotoView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/hello_world"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_launcher" />
+
+        <com.tonyk.translatephoto.customview.MaskViewCustom
+            android:id="@+id/maskView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/ivPhotoView"
+            android:layout_alignLeft="@id/ivPhotoView"
+            android:layout_alignRight="@id/ivPhotoView"
+            android:layout_alignTop="@id/ivPhotoView" />
+    </RelativeLayout>
+
+</RelativeLayout>

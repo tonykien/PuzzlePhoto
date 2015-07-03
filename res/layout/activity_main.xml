@@ -39,7 +39,8 @@
             android:layout_alignParentTop="true"
             android:layout_marginTop="20dp"
             android:layout_marginLeft="20dp"
-            android:text="Time: " />
+            android:text="Time: "
+            android:textColor="#ffffff" />
 
         <TextView
             android:id="@+id/tvTimeCounter"
@@ -47,11 +48,32 @@
             android:layout_height="wrap_content"
             android:layout_alignBottom="@+id/textView1"
             android:layout_toRightOf="@+id/textView1"
-            android:text="00:00" />
+            android:text="00:00"
+            android:textColor="#ffffff" />
+        
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@id/textView1"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="20dp"
+            android:text="Best time: "
+            android:textColor="#ffffff" />
+
+        <TextView
+            android:id="@+id/tvBestTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/textView2"
+            android:layout_toRightOf="@+id/textView2"
+            android:text="00:00"
+            android:textColor="#ffffff" />
 
     </RelativeLayout>
     
-    <com.tonyk.translatephoto.PhotoViewCustom
+    <com.tonyk.translatephoto.customview.PhotoViewCustom
         android:id="@+id/photoview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

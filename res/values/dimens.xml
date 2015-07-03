@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="photoview_margin">8dp</dimen>
+    <dimen name="top_bar_height_crop_screen">44dp</dimen>
 </resources>

@@ -53,6 +53,12 @@
                 android:scaleType="fitCenter"
                 android:src="@drawable/cutedog"
                 android:contentDescription="@string/hello_world" />
+            
+            <Button 
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Get from Gallery"
+                android:onClick="onBtnGalleryClick" />
 
         </LinearLayout>
     </ScrollView>
