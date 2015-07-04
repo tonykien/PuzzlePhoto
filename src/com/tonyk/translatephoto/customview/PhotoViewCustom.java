@@ -7,7 +7,9 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.media.SoundPool;
 import android.os.SystemClock;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -17,6 +19,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.tonyk.translatephoto.BitmapObject;
+import com.tonyk.translatephoto.R;
 import com.tonyk.translatephoto.activity.MainActivity;
 
 public class PhotoViewCustom extends View implements View.OnTouchListener {
@@ -34,14 +37,15 @@ public class PhotoViewCustom extends View implements View.OnTouchListener {
 	private int mRow, mColumn;
 	private ArrayList<Integer> mListCanTranslateIndex = new ArrayList<Integer>();
 	
-	private MediaPlayer mp;
+	private SoundPool mSoundPool;
+	private int mSoundId;
+	private boolean mSoundOn = true;
 
 	public PhotoViewCustom(Context context) {
 		super(context);
 		this.setOnTouchListener(this);
 		mPaintWhite.setColor(Color.WHITE);
 		
-		// mp = MediaPlayer.create(this, R.raw.soho);
 	}
 
 	public PhotoViewCustom(Context context, AttributeSet attrs) {
@@ -49,11 +53,12 @@ public class PhotoViewCustom extends View implements View.OnTouchListener {
 		this.setOnTouchListener(this);
 		mPaintWhite.setColor(Color.WHITE);
 		
-		// mp = MediaPlayer.create(this, R.raw.soho);
 	}
 	
 	public void setContext(Context context) {
 		mContext = context;
+		mSoundPool = new SoundPool(4, AudioManager.STREAM_MUSIC, 0);
+		mSoundId = mSoundPool.load(mContext, R.raw.click, 1);
 	}
 
 	public void setBmpSize(int bmpSize) {
@@ -78,6 +83,14 @@ public class PhotoViewCustom extends View implements View.OnTouchListener {
 	
 	public int getColumn() {
 		return mColumn;
+	}
+	
+	public void enableSound() {
+		mSoundOn = true;
+	}
+	
+	public void disableSound() {
+		mSoundOn = false;
 	}
 
 //	public void setBitmap(Bitmap b, float left, float top) {
@@ -127,7 +140,10 @@ public class PhotoViewCustom extends View implements View.OnTouchListener {
 				// translate
 				if (touchedObj.isCanTranslate()) {
 					// play sound
-					playSoundEffect(SoundEffectConstants.CLICK);
+					// playSoundEffect(SoundEffectConstants.CLICK);
+					if (mSoundOn) {
+						mSoundPool.play(mSoundId, 1, 1, 1, 0, 1);
+					}
 					
 					float tmpX = touchedObj.getX();
 					float tmpY = touchedObj.getY();
@@ -151,8 +167,11 @@ public class PhotoViewCustom extends View implements View.OnTouchListener {
 					invalidate();
 					
 					if (mWrongCount == 0) {
+						((MainActivity) mContext).disableStartBtn();
 						Toast.makeText(getContext(), "Correct!", Toast.LENGTH_SHORT).show();
 						((MainActivity) mContext).puzzleDone();
+					} else {
+						((MainActivity) mContext).enableStartBtn();
 					}
 				}
 				break;
@@ -241,7 +260,7 @@ public class PhotoViewCustom extends View implements View.OnTouchListener {
 		this.dispatchTouchEvent(motionEvent);
 		
 		/** touch index random # 0 */
-		for (int i = 0; i < 500; i++) {
+		for (int i = 0; i < 200; i++) {
 			int randomIdx = mListCanTranslateIndex.get(new Random().nextInt(mListCanTranslateIndex
 					.size()));
 			

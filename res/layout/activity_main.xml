@@ -59,7 +59,7 @@
             android:layout_below="@id/textView1"
             android:layout_marginTop="20dp"
             android:layout_marginLeft="20dp"
-            android:text="Best time: "
+            android:text="Best : "
             android:textColor="#ffffff" />
 
         <TextView
@@ -70,6 +70,30 @@
             android:layout_toRightOf="@+id/textView2"
             android:text="00:00"
             android:textColor="#ffffff" />
+
+        <ImageButton
+            android:id="@+id/imageButton1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/tvBestTime"
+            android:layout_marginRight="22dp"
+            android:layout_toLeftOf="@+id/ivPhoto"
+            android:src="@drawable/icon_sound_on"
+            android:contentDescription="@string/hello_world"
+            android:background="#00000000"
+            android:onClick="onBtnSoundClick" />
+        
+        <ImageButton
+            android:id="@+id/imageButton2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/tvTimeCounter"
+            android:layout_marginRight="22dp"
+            android:layout_toLeftOf="@+id/ivPhoto"
+            android:src="@drawable/icon_music_on"
+            android:contentDescription="@string/hello_world"
+            android:background="#00000000"
+            android:onClick="onBtnMusicClick" />
 
     </RelativeLayout>
     

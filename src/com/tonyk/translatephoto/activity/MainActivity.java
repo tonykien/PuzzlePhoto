@@ -1,5 +1,6 @@
 package com.tonyk.translatephoto.activity;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -18,13 +19,15 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Matrix;
+import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnCompletionListener;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
@@ -34,10 +37,6 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.tonyk.translatephoto.BitmapObject;
 import com.tonyk.translatephoto.R;
-import com.tonyk.translatephoto.R.dimen;
-import com.tonyk.translatephoto.R.id;
-import com.tonyk.translatephoto.R.layout;
-import com.tonyk.translatephoto.R.string;
 import com.tonyk.translatephoto.Utils;
 import com.tonyk.translatephoto.customview.PhotoViewCustom;
 
@@ -52,7 +51,7 @@ public class MainActivity extends Activity {
 	public final static String KEY_BEST_TIME = "key_best_time";
 	public final static String KEY_RANK_TIME = "key_rank_time";
 
-	private Matrix mMatrix;
+	// private Matrix mMatrix;
 	private PhotoViewCustom mPhotoview;
 	private int mRow, mColumn;
 
@@ -65,32 +64,45 @@ public class MainActivity extends Activity {
 	private int mDrawableId;
 
 	private Button mBtnStart, mBtnRandom, mBtnReset;
+	
+	private MediaPlayer mBgSoundPlayer;
+	private boolean mSoundOn = true;
+	private boolean mMusicOn = true;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		
+		mLevel = getIntent().getIntExtra("type", TYPE_MEDIUM);
+		mDrawableId = getIntent().getIntExtra("drawable", 0);
 
+		mBgSoundPlayer = MediaPlayer.create(this, R.raw.background_music_cut);
+		mBgSoundPlayer.setLooping(true);
+		
 		AdView mAdView = (AdView) findViewById(R.id.adView);
 		AdRequest adRequest = new AdRequest.Builder().build();
 		mAdView.loadAd(adRequest);
 
+		TextView tvBestTime = (TextView) findViewById(R.id.tvBestTime);
+		SharedPreferences sharedPrefScore = getSharedPreferences(PREF_NAME_SCORE, Context.MODE_PRIVATE);
+		String bestTime = sharedPrefScore.getString(KEY_BEST_TIME + mLevel, "--:--");
+		tvBestTime.setText(bestTime);
+		
 		mPhotoview = (PhotoViewCustom) findViewById(R.id.photoview);
 		mPhotoview.setContext(this);
 		mTvTimeCounter = (TextView) findViewById(R.id.tvTimeCounter);
 		ImageView ivPhoto = (ImageView) findViewById(R.id.ivPhoto);
-		RelativeLayout rlTop = (RelativeLayout) findViewById(R.id.rlTop);
+		
 		mBtnRandom = (Button) findViewById(R.id.btnRandom);
 		mBtnReset = (Button) findViewById(R.id.btnReset);
 		mBtnStart = (Button) findViewById(R.id.btnStart);
 		mBtnStart.setEnabled(false);
 		mBtnReset.setEnabled(false);
 
-		mLevel = getIntent().getIntExtra("type", TYPE_MEDIUM);
-		mDrawableId = getIntent().getIntExtra("drawable", 0);
-		int screenWidth = getWindowManager().getDefaultDisplay().getWidth();
-		int screenHeight = getWindowManager().getDefaultDisplay().getHeight();
 		DisplayMetrics dm = getResources().getDisplayMetrics();
+		int screenWidth = dm.widthPixels;
+		int screenHeight = dm.heightPixels;
 		int sttBarHeight = Utils.getStatusBarHeight(this);
 
 		int margin = getResources().getDimensionPixelSize(R.dimen.photoview_margin);
@@ -157,18 +169,79 @@ public class MainActivity extends Activity {
 		mPhotoview.invalidate();
 
 	}
+	
+//	@Override
+//	protected void onStart() {
+//		if (mSoundPlayer != null && mSoundOn) {
+//			mSoundPlayer.start();
+//		}
+//		super.onStart();
+//	}
+//	
+//	@Override
+//	protected void onStop() {
+//		if (mSoundPlayer.isPlaying()) {
+//			mSoundPlayer.pause();
+//		}
+//		super.onStop();
+//	}
+	
+	@Override
+	protected void onDestroy() {
+		if (mBgSoundPlayer.isPlaying()) {
+			mBgSoundPlayer.stop();
+		}
+		super.onDestroy();
+	}
 
 	public void onBtnRandomClick(View v) {
+		mPhotoview.disableSound();
 		mPhotoview.random();
+		if (mSoundOn) {
+			mPhotoview.enableSound();
+		}
 		mBtnStart.setEnabled(true);
 		mBtnReset.setEnabled(true);
 	}
 
 	public void onBtnResetClick(View v) {
+		if (mTimer != null) mTimer.cancel();
+		mTvTimeCounter.setText("00:00");
+		mPhotoview.disableSound();
 		mPhotoview.reset();
+		if (mSoundOn) {
+			mPhotoview.enableSound();
+		}
+		if (mBgSoundPlayer.isPlaying()) {
+			mBgSoundPlayer.stop();
+			try {
+				mBgSoundPlayer.prepare();
+			} catch (IllegalStateException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		mBtnStart.setEnabled(false);
 	}
 
 	public void onBtnStartClick(View v) {
+		MediaPlayer mpStart = MediaPlayer.create(this, R.raw.start_bell);
+		mpStart.start();
+		mpStart.setOnCompletionListener(new OnCompletionListener() {
+			
+			@Override
+			public void onCompletion(MediaPlayer mp) {
+				if (mSoundOn) {
+					mBgSoundPlayer.start();
+				}
+				
+			}
+		});
+		
+		mBtnStart.setEnabled(false);
+		mPhotoview.enableSound();
+		
 		if (mTimer != null) {
 			mTimer.cancel();
 		}
@@ -179,6 +252,41 @@ public class MainActivity extends Activity {
 		mMyTimerTask = new MyTimerTask();
 
 		mTimer.schedule(mMyTimerTask, 1000, 1000);
+		
+	}
+	
+	public void onBtnSoundClick(View v) {
+		if (mSoundOn) {
+			mSoundOn = false;
+			mPhotoview.disableSound();
+			((ImageButton) v).setImageResource(R.drawable.icon_sound_off);
+		} else {
+			mSoundOn = true;
+			mPhotoview.enableSound();
+			((ImageButton) v).setImageResource(R.drawable.icon_sound_on);
+		}
+	}
+	
+	public void onBtnMusicClick(View v) {
+		if (mMusicOn) {
+			mMusicOn = false;
+			if (mBgSoundPlayer.isPlaying()) {
+				mBgSoundPlayer.pause();
+			}
+			((ImageButton) v).setImageResource(R.drawable.icon_music_off);
+		} else {
+			mMusicOn = true;
+			mBgSoundPlayer.start();
+			((ImageButton) v).setImageResource(R.drawable.icon_music_on);
+		}
+	}
+	
+	public void enableStartBtn() {
+		mBtnStart.setEnabled(true);
+	}
+	
+	public void disableStartBtn() {
+		mBtnStart.setEnabled(false);
 	}
 
 	public void splitBitmap(Bitmap bitmap, int xCount, int yCount) {
