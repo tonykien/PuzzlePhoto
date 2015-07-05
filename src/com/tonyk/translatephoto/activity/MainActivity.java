@@ -68,6 +68,8 @@ public class MainActivity extends Activity {
 	private MediaPlayer mBgSoundPlayer;
 	private boolean mSoundOn = true;
 	private boolean mMusicOn = true;
+	
+	private boolean mIsStarted = false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -98,7 +100,7 @@ public class MainActivity extends Activity {
 		mBtnReset = (Button) findViewById(R.id.btnReset);
 		mBtnStart = (Button) findViewById(R.id.btnStart);
 		mBtnStart.setEnabled(false);
-		mBtnReset.setEnabled(false);
+		// mBtnReset.setEnabled(false);
 
 		DisplayMetrics dm = getResources().getDisplayMetrics();
 		int screenWidth = dm.widthPixels;
@@ -222,25 +224,35 @@ public class MainActivity extends Activity {
 				e.printStackTrace();
 			}
 		}
+		mBtnRandom.setEnabled(true);
 		mBtnStart.setEnabled(false);
+		mIsStarted = false;
 	}
 
 	public void onBtnStartClick(View v) {
-		MediaPlayer mpStart = MediaPlayer.create(this, R.raw.start_bell);
-		mpStart.start();
-		mpStart.setOnCompletionListener(new OnCompletionListener() {
-			
-			@Override
-			public void onCompletion(MediaPlayer mp) {
-				if (mSoundOn) {
-					mBgSoundPlayer.start();
-				}
+		if (mSoundOn) {
+			MediaPlayer mpStart = MediaPlayer.create(this, R.raw.start_bell);
+			mpStart.start();
+			mpStart.setOnCompletionListener(new OnCompletionListener() {
 				
-			}
-		});
+				@Override
+				public void onCompletion(MediaPlayer mp) {
+					if (mMusicOn) {
+						mBgSoundPlayer.start();
+					}
+					
+				}
+			});
+		} else if (mMusicOn) {
+			mBgSoundPlayer.start();
+		}
 		
+		mIsStarted = true;
 		mBtnStart.setEnabled(false);
-		mPhotoview.enableSound();
+		mBtnRandom.setEnabled(false);
+		if (mSoundOn) {
+			mPhotoview.enableSound();
+		}
 		
 		if (mTimer != null) {
 			mTimer.cancel();
@@ -282,7 +294,9 @@ public class MainActivity extends Activity {
 	}
 	
 	public void enableStartBtn() {
-		mBtnStart.setEnabled(true);
+		if (!mIsStarted) {
+			mBtnStart.setEnabled(true);
+		}
 	}
 	
 	public void disableStartBtn() {
@@ -327,8 +341,13 @@ public class MainActivity extends Activity {
 	}
 
 	public void puzzleDone() {
+		if (!mIsStarted) {
+			return;
+		}
+		mIsStarted = false;
 		Log.i("puzzleDone", "puzzleDone");
 		if (mTimer != null) mTimer.cancel();
+		mBtnRandom.setEnabled(true);
 
 		// check best time
 		boolean isBestTime = false;
