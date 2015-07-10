@@ -1,9 +1,8 @@
 package com.tonyk.translatephoto.activity;
 
 import java.util.ArrayList;
-import java.util.Set;
-
-import com.tonyk.translatephoto.R;
+import java.util.Arrays;
+import java.util.List;
 
 import android.app.Activity;
 import android.content.Context;
@@ -17,6 +16,8 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.tonyk.translatephoto.R;
+
 public class HighScoreActivity extends Activity {
 
 	@Override
@@ -26,13 +27,13 @@ public class HighScoreActivity extends Activity {
 		
 		ListView lvHighScore = (ListView) findViewById(R.id.lvScore);
 		
-		int level = getIntent().getIntExtra("type", MainActivity.TYPE_MEDIUM);
+		int level = getIntent().getIntExtra("type", MainActivity.LEVEL_MEDIUM);
 		
-		SharedPreferences sharedPrefScore = getSharedPreferences(MainActivity.PREF_NAME_SCORE, Context.MODE_PRIVATE);
-		Set<String> setScores = sharedPrefScore.getStringSet(MainActivity.KEY_RANK_TIME + level, null);
-		if (setScores != null) {
-			ArrayList<String> listScores = new ArrayList<String>(setScores);
-			HSListAdapter adapter = new HSListAdapter(this, listScores);
+		SharedPreferences sharedPrefScore = getSharedPreferences(MainActivity.PREF_PUZZLE_PHOTO, Context.MODE_PRIVATE);
+		String scoreRank = sharedPrefScore.getString(MainActivity.KEY_RANK_TIME + level, "");
+		if (!scoreRank.isEmpty()) {
+			String[] arrRank = scoreRank.split(",");
+			HSListAdapter adapter = new HSListAdapter(this, Arrays.asList(arrRank));
 			lvHighScore.setAdapter(adapter);
 			
 		} else {
@@ -44,9 +45,9 @@ public class HighScoreActivity extends Activity {
 	private class HSListAdapter extends BaseAdapter {
 		
 		private Context mContext;
-		private ArrayList<String> mTimeList = new ArrayList<String>();
+		private List<String> mTimeList = new ArrayList<String>();
 		
-		public HSListAdapter(Context context, ArrayList<String> timeList) {
+		public HSListAdapter(Context context, List<String> timeList) {
 			mContext = context;
 			mTimeList = timeList;
 		}

@@ -12,19 +12,17 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-"
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="com.tonyk.translatephoto.activity.MainActivity"
+            android:name=".activity.MainActivity"
             android:label="@string/app_name" >
         </activity>
-        <activity       
-            android:name=".activity.TopActivity"
-            android:label="@string/title_activity_top" >
+        <activity android:name=".activity.TopActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -44,17 +42,21 @@
             android:value="@integer/google_play_services_version" />
 
         <activity
-            android:name="com.tonyk.translatephoto.activity.HighScoreActivity"
+            android:name=".activity.HighScoreActivity"
             android:label="@string/title_activity_high_score" >
-            </activity>
-
+        </activity>
         <activity
-            android:name="com.tonyk.translatephoto.activity.SelectPhotoActivity"
+            android:name=".activity.SelectPhotoActivity"
             android:label="@string/title_activity_select_photo" >
         </activity>
         <activity
-            android:name="com.tonyk.translatephoto.activity.CropPhotoActivity"
+            android:name=".activity.CropPhotoActivity"
             android:label="@string/title_activity_crop_photo" >
+        </activity>
+        <activity
+            android:name="com.tonyk.translatephoto.activity.RankTimeActivity"
+            android:label="@string/title_activity_rank_time"
+            android:theme="@style/RankTimeTheme" >
         </activity>
     </application>
 

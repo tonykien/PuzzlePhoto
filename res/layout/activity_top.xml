@@ -3,52 +3,89 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="${relativePackage}.${activityClass}" >
+    
+    <ImageView 
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/puzzle_top_bg"
+        android:scaleType="centerCrop"/>
+    
+    <View 
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#66000000"/>
 
-    <RadioGroup
+    <!-- <RadioGroup
         android:id="@+id/radioGrp"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="60dp" >
+        android:layout_marginTop="60dp"
+        android:background="#1c5fab"
+        android:orientation="horizontal"
+        android:padding="0.5dp" >
 
         <RadioButton
             android:id="@+id/radioEasy"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:checked="true"
-            android:text="Easy (3x4)" />
+            android:button="@null"
+            android:paddingTop="6dp"
+            android:paddingBottom="6dp"
+            android:gravity="center"
+            android:text="Easy (3x4)"
+            android:textColor="@drawable/rbtn_textcolor_selector"
+            android:background="@drawable/radiobtn_selector" />
 
         <RadioButton
             android:id="@+id/radioMedium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Medium (4x4)" />
+            android:layout_weight="1"
+            android:button="@null"
+            android:paddingTop="6dp"
+            android:paddingBottom="6dp"
+            android:gravity="center"
+            android:text="Medium (4x4)"
+            android:textColor="@drawable/rbtn_textcolor_selector"
+            android:background="@drawable/radiobtn_selector" />
 
         <RadioButton
             android:id="@+id/radioHard"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Hard (5x5)" />
-    </RadioGroup>
+            android:layout_weight="1"
+            android:button="@null"
+            android:paddingTop="6dp"
+            android:paddingBottom="6dp"
+            android:gravity="center"
+            android:text="Hard (5x5)"
+            android:textColor="@drawable/rbtn_textcolor_selector"
+            android:background="@drawable/radiobtn_selector" />
+    </RadioGroup> -->
 
     <Button
-        android:id="@+id/btnPlay"
-        android:layout_width="wrap_content"
+        android:id="@+id/btnHighScore"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/radioGrp"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="60dp"
-        android:text="Play" />
+        android:layout_centerInParent="true"
+        android:text="@string/high_score_text"
+        android:textColor="#ffffff"
+        android:onClick="onBtnHighScoreClick"
+        android:background="@drawable/fab_shape_rectangle" />
     
     <Button
-        android:id="@+id/btnHighScore"
-        android:layout_width="wrap_content"
+        android:id="@+id/btnPlay"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/btnPlay"
+        android:layout_above="@id/btnHighScore"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:text="High Score"
-        android:onClick="onBtnHighScoreClick" />
+        android:layout_marginBottom="20dp"
+        android:text="@string/play_text"
+        android:textColor="#ffffff"
+        android:background="@drawable/fab_shape_rectangle" />
 
 </RelativeLayout>

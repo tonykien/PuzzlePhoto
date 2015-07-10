@@ -5,11 +5,14 @@ import java.io.ByteArrayOutputStream;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Matrix;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
+import android.widget.Toast;
 
 import com.tonyk.translatephoto.R;
 import com.tonyk.translatephoto.Utils;
@@ -22,8 +25,8 @@ public class CropPhotoActivity extends Activity {
 
 	private Bitmap mBmpResized;
 	private float mScaleRatio;
-	
-	private int mType;
+
+	private int mLevel;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -33,13 +36,23 @@ public class CropPhotoActivity extends Activity {
 		mIvPhotoView = (ImageView) findViewById(R.id.ivPhotoView);
 		mMaskView = (MaskViewCustom) findViewById(R.id.maskView);
 
-		mType = getIntent().getIntExtra("type", MainActivity.TYPE_MEDIUM);
-		if (mType == MainActivity.TYPE_EASY) {
-			mMaskView.setRectRatio(4f/3);
+		mLevel = getIntent().getIntExtra(MainActivity.KEY_LEVEL, MainActivity.LEVEL_MEDIUM);
+		if (mLevel == MainActivity.LEVEL_EASY) {
+			mMaskView.setRectRatio(4f / 3);
 		}
-		String pathName = getIntent().getStringExtra("photo_path");
+		String pathName = getIntent().getStringExtra(SelectPhotoActivity.KEY_PHOTO_PATH);
+		Log.i("pathName", "pathName:" + pathName);
 		mBmpResized = Utils.resizeBitmap(pathName, 1000);
 
+		if (mBmpResized != null) {
+			setLayoutImv();
+		} else {
+			Toast.makeText(this, R.string.msg_something_wrong, Toast.LENGTH_SHORT).show();
+		}
+
+	}
+
+	public void setLayoutImv() {
 		int widthView = getResources().getDisplayMetrics().widthPixels;
 		int heightView = getResources().getDisplayMetrics().heightPixels
 				- Utils.getStatusBarHeight(this)
@@ -54,7 +67,22 @@ public class CropPhotoActivity extends Activity {
 		params.addRule(RelativeLayout.CENTER_IN_PARENT);
 		mIvPhotoView.setLayoutParams(params);
 		mIvPhotoView.setImageBitmap(mBmpResized);
+	}
 
+	public void onBtnRotateClockClick(View v) {
+		Matrix matrix = new Matrix();
+		matrix.postRotate(90);
+		mBmpResized = Bitmap.createBitmap(mBmpResized, 0, 0, mBmpResized.getWidth(),
+				mBmpResized.getHeight(), matrix, true);
+		setLayoutImv();
+	}
+	
+	public void onBtnRotateAntiClockClick(View v) {
+		Matrix matrix = new Matrix();
+		matrix.postRotate(-90);
+		mBmpResized = Bitmap.createBitmap(mBmpResized, 0, 0, mBmpResized.getWidth(),
+				mBmpResized.getHeight(), matrix, true);
+		setLayoutImv();
 	}
 
 	public void onBtnDoneClick(View v) {
@@ -67,13 +95,16 @@ public class CropPhotoActivity extends Activity {
 		cropBmp.compress(Bitmap.CompressFormat.JPEG, 100, stream);
 		byte[] byteArray = stream.toByteArray();
 		Intent intent = new Intent(this, MainActivity.class);
-		intent.putExtra("photo_bytes", byteArray);
-		intent.putExtra("type", mType);
+		intent.putExtra(MainActivity.KEY_PHOTO_BYTES, byteArray);
+		intent.putExtra(MainActivity.KEY_LEVEL, mLevel);
 		startActivity(intent);
 		mBmpResized.recycle();
 		cropBmp.recycle();
 		finish();
-		
+	}
+
+	public void onBtnCancelClick(View v) {
+		finish();
 	}
 
 }

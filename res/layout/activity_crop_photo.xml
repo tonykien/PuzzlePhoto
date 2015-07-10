@@ -11,28 +11,69 @@
         android:layout_height="@dimen/top_bar_height_crop_screen"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:background="#00838f" >
+        android:background="@color/app_color" >
 
         <Button
-            android:id="@+id/button1"
+            android:id="@+id/btnCancel"
             style="?android:attr/buttonStyleSmall"
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/btn_size_crop"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="8dp"
-            android:text="Cancel" />
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="6dp"
+            android:layout_marginLeft="10dp"
+            android:onClick="onBtnCancelClick"
+            android:background="@drawable/fab_shape_rect_crop_screen"
+            android:text="@string/cancel"
+            android:textColor="@color/app_color" />
 
         <Button
             android:id="@+id/btnDone"
             style="?android:attr/buttonStyleSmall"
+            android:layout_width="@dimen/btn_size_crop"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="6dp"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/fab_shape_rect_crop_screen"
+            android:onClick="onBtnDoneClick"
+            android:text="@string/done"
+            android:textColor="@color/app_color"
+            android:textStyle="bold" />
+
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:layout_marginRight="8dp"
-            android:onClick="onBtnDoneClick"
-            android:text="Done" />
+            android:layout_toLeftOf="@id/btnDone"
+            android:layout_toRightOf="@id/btnCancel"
+            android:gravity="center" >
+
+            <ImageButton
+                android:id="@+id/imageButton1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="30dp"
+                android:src="@drawable/rotate_anticlockwise"
+                android:background="@android:color/transparent"
+                android:contentDescription="@string/hello_world"
+                android:onClick="onBtnRotateAntiClockClick" />
+
+            <ImageButton
+                android:id="@+id/imageButton2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/rotate_clockwise"
+                android:background="@android:color/transparent"
+                android:contentDescription="@string/hello_world"
+                android:onClick="onBtnRotateClockClick" />
+
+        </LinearLayout>
+
     </RelativeLayout>
 
     <RelativeLayout

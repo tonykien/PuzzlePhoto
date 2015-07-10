@@ -29,7 +29,8 @@
             android:layout_height="100dp"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:scaleType="fitCenter" />
+            android:scaleType="fitCenter"
+            android:contentDescription="@string/hello_world" />
 
         <TextView
             android:id="@+id/textView1"
@@ -39,7 +40,7 @@
             android:layout_alignParentTop="true"
             android:layout_marginTop="20dp"
             android:layout_marginLeft="20dp"
-            android:text="Time: "
+            android:text="@string/time_text"
             android:textColor="#ffffff" />
 
         <TextView
@@ -48,7 +49,7 @@
             android:layout_height="wrap_content"
             android:layout_alignBottom="@+id/textView1"
             android:layout_toRightOf="@+id/textView1"
-            android:text="00:00"
+            android:text="@string/start_time"
             android:textColor="#ffffff" />
         
         <TextView
@@ -59,7 +60,7 @@
             android:layout_below="@id/textView1"
             android:layout_marginTop="20dp"
             android:layout_marginLeft="20dp"
-            android:text="Best : "
+            android:text="@string/best_time_text"
             android:textColor="#ffffff" />
 
         <TextView
@@ -68,8 +69,9 @@
             android:layout_height="wrap_content"
             android:layout_alignBottom="@+id/textView2"
             android:layout_toRightOf="@+id/textView2"
-            android:text="00:00"
-            android:textColor="#ffffff" />
+            android:text="@string/start_time"
+            android:textColor="#ffffff"
+            android:maxLength="15" />
 
         <ImageButton
             android:id="@+id/imageButton1"
@@ -108,32 +110,35 @@
     
     <Button
         android:id="@+id/btnReset"
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="70dp"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/btn_size_main"
+        android:layout_height="@dimen/btn_size_main"
         android:layout_alignTop="@id/photoview"
         android:layout_alignRight="@id/photoview"
-        android:text="Reset"
-        android:onClick="onBtnResetClick" />
+        android:text="@string/reset_text"
+        style="@style/BtnStyle"
+        android:onClick="onBtnResetClick"
+        android:background="@drawable/fab_shape_circle" />
     
     <Button
         android:id="@+id/btnRandom"
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="70dp"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/btn_size_main"
+        android:layout_height="@dimen/btn_size_main"
         android:layout_alignTop="@id/photoview"
         android:layout_toLeftOf="@id/btnReset"
         android:onClick="onBtnRandomClick"
-        android:text="Random" />
+        android:text="@string/auto_text"
+        style="@style/BtnStyle"
+        android:background="@drawable/fab_shape_circle" />
 
     <Button
         android:id="@+id/btnStart"
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="70dp"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/btn_size_main"
+        android:layout_height="@dimen/btn_size_main"
         android:layout_alignTop="@id/photoview"
         android:layout_toLeftOf="@id/btnRandom"
         android:onClick="onBtnStartClick"
-        android:text="Start" />
+        android:text="@string/start_text"
+        style="@style/BtnStyle"
+        android:background="@drawable/fab_shape_circle_startbtn" />
 
 </RelativeLayout>

@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <dimen name="photoview_margin">8dp</dimen>
     <dimen name="top_bar_height_crop_screen">44dp</dimen>
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="btn_size_main">50dp</dimen>
+    <dimen name="btn_size_crop">70dp</dimen>
+
 </resources>

@@ -3,16 +3,16 @@ package com.tonyk.translatephoto.activity;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.graphics.Bitmap;
@@ -22,6 +22,8 @@ import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.os.Bundle;
+import android.text.InputFilter;
+import android.text.Spanned;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
@@ -32,9 +34,12 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.InterstitialAd;
 import com.tonyk.translatephoto.BitmapObject;
 import com.tonyk.translatephoto.R;
 import com.tonyk.translatephoto.Utils;
@@ -42,14 +47,20 @@ import com.tonyk.translatephoto.customview.PhotoViewCustom;
 
 public class MainActivity extends Activity {
 
-	private final static int BORDER_SIZE = 2;
-	public final static int TYPE_EASY = 1;
-	public final static int TYPE_MEDIUM = 2;
-	public final static int TYPE_HARD = 3;
+	public final static int BORDER_SIZE = 2;
+	public final static int LEVEL_EASY = 1;
+	public final static int LEVEL_MEDIUM = 2;
+	public final static int LEVEL_HARD = 3;
 
-	public final static String PREF_NAME_SCORE = "PrefScore";
-	public final static String KEY_BEST_TIME = "key_best_time";
-	public final static String KEY_RANK_TIME = "key_rank_time";
+	public final static String PREF_PUZZLE_PHOTO = "PrefPuzzlePhoto";
+	public final static String KEY_BEST_TIME = "best_time";
+	public final static String KEY_RANK_TIME = "rank_time";
+	public final static String KEY_LEVEL = "level";
+	public final static String KEY_PHOTO = "photo";
+	public final static String KEY_PHOTO_BYTES = "photo_bytes";
+	public final static String KEY_SAVE_COUNT = "save_count";
+
+	public final static String TIME_FORMAT = "mm:ss";
 
 	// private Matrix mMatrix;
 	private PhotoViewCustom mPhotoview;
@@ -57,89 +68,105 @@ public class MainActivity extends Activity {
 
 	private Timer mTimer;
 	private MyTimerTask mMyTimerTask;
-	private TextView mTvTimeCounter;
+	private TextView mTvTimeCounter, mTvBestTime;
 	private long mTimeStart;
 
 	private int mLevel;
 	private int mDrawableId;
 
 	private Button mBtnStart, mBtnRandom, mBtnReset;
-	
+
 	private MediaPlayer mBgSoundPlayer;
 	private boolean mSoundOn = true;
 	private boolean mMusicOn = true;
-	
+
 	private boolean mIsStarted = false;
+	
+	private InterstitialAd mInterstitialAd;
+	private SharedPreferences mPuzzlePref;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		
-		mLevel = getIntent().getIntExtra("type", TYPE_MEDIUM);
-		mDrawableId = getIntent().getIntExtra("drawable", 0);
+		mLevel = getIntent().getIntExtra(KEY_LEVEL, LEVEL_MEDIUM);
+		mDrawableId = getIntent().getIntExtra(KEY_PHOTO, 0);
 
 		mBgSoundPlayer = MediaPlayer.create(this, R.raw.background_music_cut);
 		mBgSoundPlayer.setLooping(true);
-		
+
+		// admob
 		AdView mAdView = (AdView) findViewById(R.id.adView);
 		AdRequest adRequest = new AdRequest.Builder().build();
 		mAdView.loadAd(adRequest);
-
-		TextView tvBestTime = (TextView) findViewById(R.id.tvBestTime);
-		SharedPreferences sharedPrefScore = getSharedPreferences(PREF_NAME_SCORE, Context.MODE_PRIVATE);
-		String bestTime = sharedPrefScore.getString(KEY_BEST_TIME + mLevel, "--:--");
-		tvBestTime.setText(bestTime);
 		
+		mInterstitialAd = new InterstitialAd(this);
+        mInterstitialAd.setAdUnitId(getResources().getString(R.string.interstitial_ad_unit_id));
+        requestNewInterstitial();
+        mInterstitialAd.setAdListener(new AdListener() {
+            @Override
+            public void onAdClosed() {
+                requestNewInterstitial();
+            }
+        });
+
+		mTvBestTime = (TextView) findViewById(R.id.tvBestTime);
+		mPuzzlePref = getSharedPreferences(PREF_PUZZLE_PHOTO,
+				Context.MODE_PRIVATE);
+		String bestTime = mPuzzlePref.getString(KEY_BEST_TIME + mLevel, "--:--");
+		mTvBestTime.setText(bestTime);
+
 		mPhotoview = (PhotoViewCustom) findViewById(R.id.photoview);
 		mPhotoview.setContext(this);
 		mTvTimeCounter = (TextView) findViewById(R.id.tvTimeCounter);
 		ImageView ivPhoto = (ImageView) findViewById(R.id.ivPhoto);
-		
+
 		mBtnRandom = (Button) findViewById(R.id.btnRandom);
 		mBtnReset = (Button) findViewById(R.id.btnReset);
 		mBtnStart = (Button) findViewById(R.id.btnStart);
-		mBtnStart.setEnabled(false);
+		disableStartBtn();
 		// mBtnReset.setEnabled(false);
 
-		DisplayMetrics dm = getResources().getDisplayMetrics();
-		int screenWidth = dm.widthPixels;
-		int screenHeight = dm.heightPixels;
-		int sttBarHeight = Utils.getStatusBarHeight(this);
-
-		int margin = getResources().getDimensionPixelSize(R.dimen.photoview_margin);
-		Bitmap bmp;
-		if (mDrawableId != 0) {
-			bmp = BitmapFactory.decodeResource(getResources(), mDrawableId);
-		} else {
-			byte[] byteArray = getIntent().getByteArrayExtra("photo_bytes");
-			bmp = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
-		}
-		int fitWidth;
-		int fitHeight;
-		float blockSize;
-
 		switch (mLevel) {
-		case TYPE_EASY:
+		case LEVEL_EASY:
 			mRow = 4;
 			mColumn = 3;
+			mPhotoview.setRandomNumber(200);
 			break;
-		case TYPE_MEDIUM:
+		case LEVEL_MEDIUM:
 			mRow = 4;
 			mColumn = 4;
+			mPhotoview.setRandomNumber(300);
 			break;
-		case TYPE_HARD:
+		case LEVEL_HARD:
 			mRow = 5;
 			mColumn = 5;
+			mPhotoview.setRandomNumber(400);
 			break;
 
 		default:
 			break;
 		}
 
-		fitWidth = screenWidth - margin * 2 - BORDER_SIZE * 2 * mColumn;
-		fitHeight = (int) (screenHeight - sttBarHeight - margin * 2 - BORDER_SIZE * 2 * (mRow + 1) - 150 * dm.density);
-		blockSize = (float) fitWidth / mColumn;
+		DisplayMetrics dm = getResources().getDisplayMetrics();
+		int screenWidth = dm.widthPixels;
+		int screenHeight = dm.heightPixels;
+		int sttBarHeight = Utils.getStatusBarHeight(this);
+
+		Bitmap bmp;
+		if (mDrawableId != 0) {
+			bmp = BitmapFactory.decodeResource(getResources(), mDrawableId);
+		} else {
+			byte[] byteArray = getIntent().getByteArrayExtra(KEY_PHOTO_BYTES);
+			bmp = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
+		}
+
+		int margin = getResources().getDimensionPixelSize(R.dimen.photoview_margin);
+		int fitWidth = screenWidth - margin * 2 - BORDER_SIZE * 2 * mColumn;
+		int fitHeight = (int) (screenHeight - sttBarHeight - margin * 2 - BORDER_SIZE * 2
+				* (mRow + 1) - 150 * dm.density);
+		float blockSize = (float) fitWidth / mColumn;
 		if (blockSize > (float) fitHeight / (mRow + 1)) {
 			blockSize = (float) fitHeight / (mRow + 1);
 
@@ -171,23 +198,23 @@ public class MainActivity extends Activity {
 		mPhotoview.invalidate();
 
 	}
-	
-//	@Override
-//	protected void onStart() {
-//		if (mSoundPlayer != null && mSoundOn) {
-//			mSoundPlayer.start();
-//		}
-//		super.onStart();
-//	}
-//	
-//	@Override
-//	protected void onStop() {
-//		if (mSoundPlayer.isPlaying()) {
-//			mSoundPlayer.pause();
-//		}
-//		super.onStop();
-//	}
-	
+
+	// @Override
+	// protected void onStart() {
+	// if (mSoundPlayer != null && mSoundOn) {
+	// mSoundPlayer.start();
+	// }
+	// super.onStart();
+	// }
+	//
+	// @Override
+	// protected void onStop() {
+	// if (mSoundPlayer.isPlaying()) {
+	// mSoundPlayer.pause();
+	// }
+	// super.onStop();
+	// }
+
 	@Override
 	protected void onDestroy() {
 		if (mBgSoundPlayer.isPlaying()) {
@@ -196,6 +223,14 @@ public class MainActivity extends Activity {
 		super.onDestroy();
 	}
 
+	private void requestNewInterstitial() {
+        AdRequest adRequest = new AdRequest.Builder()
+                  .addTestDevice("510A6EBB684C5FE74FB127A57DF9580C")
+                  .build();
+
+        mInterstitialAd.loadAd(adRequest);
+    }
+	
 	public void onBtnRandomClick(View v) {
 		mPhotoview.disableSound();
 		mPhotoview.random();
@@ -225,7 +260,7 @@ public class MainActivity extends Activity {
 			}
 		}
 		mBtnRandom.setEnabled(true);
-		mBtnStart.setEnabled(false);
+		disableStartBtn();
 		mIsStarted = false;
 	}
 
@@ -234,26 +269,26 @@ public class MainActivity extends Activity {
 			MediaPlayer mpStart = MediaPlayer.create(this, R.raw.start_bell);
 			mpStart.start();
 			mpStart.setOnCompletionListener(new OnCompletionListener() {
-				
+
 				@Override
 				public void onCompletion(MediaPlayer mp) {
 					if (mMusicOn) {
 						mBgSoundPlayer.start();
 					}
-					
+
 				}
 			});
 		} else if (mMusicOn) {
 			mBgSoundPlayer.start();
 		}
-		
+
 		mIsStarted = true;
-		mBtnStart.setEnabled(false);
+		disableStartBtn();
 		mBtnRandom.setEnabled(false);
 		if (mSoundOn) {
 			mPhotoview.enableSound();
 		}
-		
+
 		if (mTimer != null) {
 			mTimer.cancel();
 		}
@@ -264,9 +299,9 @@ public class MainActivity extends Activity {
 		mMyTimerTask = new MyTimerTask();
 
 		mTimer.schedule(mMyTimerTask, 1000, 1000);
-		
+
 	}
-	
+
 	public void onBtnSoundClick(View v) {
 		if (mSoundOn) {
 			mSoundOn = false;
@@ -278,7 +313,7 @@ public class MainActivity extends Activity {
 			((ImageButton) v).setImageResource(R.drawable.icon_sound_on);
 		}
 	}
-	
+
 	public void onBtnMusicClick(View v) {
 		if (mMusicOn) {
 			mMusicOn = false;
@@ -288,19 +323,23 @@ public class MainActivity extends Activity {
 			((ImageButton) v).setImageResource(R.drawable.icon_music_off);
 		} else {
 			mMusicOn = true;
-			mBgSoundPlayer.start();
+			if (mIsStarted) {
+				mBgSoundPlayer.start();
+			}
 			((ImageButton) v).setImageResource(R.drawable.icon_music_on);
 		}
 	}
-	
+
 	public void enableStartBtn() {
 		if (!mIsStarted) {
 			mBtnStart.setEnabled(true);
+			// mBtnStart.setTextColor(Color.WHITE);
 		}
 	}
-	
+
 	public void disableStartBtn() {
 		mBtnStart.setEnabled(false);
+		// mBtnStart.setTextColor(Color.parseColor("#80ffffff"));
 	}
 
 	public void splitBitmap(Bitmap bitmap, int xCount, int yCount) {
@@ -346,16 +385,17 @@ public class MainActivity extends Activity {
 		}
 		mIsStarted = false;
 		Log.i("puzzleDone", "puzzleDone");
-		if (mTimer != null) mTimer.cancel();
+		if (mTimer != null) {
+			mTimer.cancel();
+		}
 		mBtnRandom.setEnabled(true);
 
 		// check best time
 		boolean isBestTime = false;
-		SharedPreferences sharedPrefScore = getSharedPreferences(PREF_NAME_SCORE, Context.MODE_PRIVATE);
 		SimpleDateFormat df = new SimpleDateFormat("mm:ss");
 		String newTime = mTvTimeCounter.getText().toString();
-		String oldBestTime = sharedPrefScore.getString(KEY_BEST_TIME + mLevel,
-				"59:59-username").substring(0, 5);
+		String oldBestTime = mPuzzlePref.getString(KEY_BEST_TIME + mLevel, "59:59-username")
+				.substring(0, 5);
 		try {
 			if (df.parse(oldBestTime).getTime() > df.parse(newTime).getTime()) {
 				isBestTime = true;
@@ -395,6 +435,20 @@ public class MainActivity extends Activity {
 		TextView tvTimer = (TextView) dialog.findViewById(R.id.tvTime);
 		final EditText etName = (EditText) dialog.findViewById(R.id.etName);
 		
+		// filter edittext (cannot input ',')
+		InputFilter filter = new InputFilter() {
+			public CharSequence filter(CharSequence source, int start, int end, Spanned dest,
+					int dstart, int dend) {
+				for (int i = start; i < end; i++) {
+					if (source.charAt(i) == ',') {
+						return "";
+					}
+				}
+				return null;
+			}
+		};
+		etName.setFilters(new InputFilter[] { filter });
+
 		if (isBestTime) {
 			TextView tvTitle = (TextView) dialog.findViewById(R.id.tvTitle);
 			tvTitle.setText(getResources().getString(R.string.congratulate));
@@ -418,59 +472,110 @@ public class MainActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				// TODO
-				addNewRecord(etName);
-				dialog.dismiss();
+				String name = etName.getText().toString().trim();
+				if (!name.isEmpty()) {
+					addNewRecord(name);
+					dialog.dismiss();
+					
+					int saveCount = mPuzzlePref.getInt(KEY_SAVE_COUNT, 0);
+					saveCount += 1;
+					if (saveCount < 20) {
+						if ((saveCount % 5) == 0 && mInterstitialAd.isLoaded()) {
+		                    mInterstitialAd.show();
+		                }
+					} else {
+						if ((saveCount % 3) == 0 && mInterstitialAd.isLoaded()) {
+		                    mInterstitialAd.show();
+		                }
+					}
+				} else {
+					// TODO name empty
+					Toast.makeText(MainActivity.this, R.string.msg_please_input_name, Toast.LENGTH_SHORT).show();
+				}
+				
 			}
 		});
 	}
 
-	private void addNewRecord(EditText etName) {
-		String name = etName.getText().toString().trim();
+	private void addNewRecord(String name) {
 		String newTime = mTvTimeCounter.getText().toString();
 		if (!name.isEmpty()) {
 			try {
-				SharedPreferences sharedPrefScore = getSharedPreferences(PREF_NAME_SCORE,
-						Context.MODE_PRIVATE);
-
 				// Update best time
-				SimpleDateFormat df = new SimpleDateFormat("mm:ss");
-				String oldBestTime = sharedPrefScore.getString(KEY_BEST_TIME + mLevel,
+				SimpleDateFormat df = new SimpleDateFormat(TIME_FORMAT);
+				String oldBestTime = mPuzzlePref.getString(KEY_BEST_TIME + mLevel,
 						"59:59-username").substring(0, 5);
 				if (df.parse(oldBestTime).getTime() > df.parse(newTime).getTime()) {
-					sharedPrefScore.edit().putString(KEY_BEST_TIME + mLevel, newTime + "-" + name)
+					mPuzzlePref.edit().putString(KEY_BEST_TIME + mLevel, newTime + "-" + name)
 							.commit();
+
+					// update textview best time
+					mTvBestTime.setText(newTime + "-" + name);
 				}
 
 				// Update rank time
-				Set<String> setTopTime = sharedPrefScore.getStringSet(KEY_RANK_TIME + mLevel, null);
-				if (setTopTime != null) {
-					ArrayList<String> listTopTime = new ArrayList<String>(setTopTime);
-					for (String time : listTopTime) {
-						if (df.parse(time.substring(0, 5)).getTime() > df.parse(newTime).getTime()) {
-							listTopTime.add(listTopTime.indexOf(time), newTime + "-" + name);
-							break;
+				// Set<String> setTopTime =
+				// sharedPrefScore.getStringSet(KEY_RANK_TIME + mLevel, null);
+				String rankTime = mPuzzlePref.getString(KEY_RANK_TIME + mLevel, "");
+				if (!rankTime.isEmpty()) {
+					String[] arrRank = rankTime.split(",");
+					StringBuilder newRankTime = new StringBuilder();
+					boolean addInRank = false;
+					for (int i = 0; i < arrRank.length; i++) {
+						if (!addInRank
+								&& df.parse(arrRank[i].substring(0, 5)).getTime() > df.parse(
+										newTime).getTime()) {
+							String value = newTime + "-" + name;
+							newRankTime.append(value).append(",");
+							addInRank = true;
 						}
-						Log.i("puzzleDone", time + " - string");
+						if (!addInRank || (addInRank && i < 9)) {
+							newRankTime.append(arrRank[i]).append(",");
+						}
 					}
-					
-					String longestTime = listTopTime.get(listTopTime.size() - 1);
-					if (df.parse(newTime).getTime() > df.parse(longestTime.substring(0, 5)).getTime()) {
-						listTopTime.add(newTime + "-" + name);
+					if (!addInRank && arrRank.length < 10) {
+						String value = newTime + "-" + name;
+						newRankTime.append(value).append(",");
 					}
-					
-					if (listTopTime.size() > 10) {
-						listTopTime.remove(listTopTime.size() - 1);
-					}
-					
-					Editor editor = sharedPrefScore.edit();
-					editor.putStringSet(KEY_RANK_TIME + mLevel, new HashSet<String>(listTopTime));
+					newRankTime.deleteCharAt(newRankTime.length() - 1);
+
+					Editor editor = mPuzzlePref.edit();
+					editor.putString(KEY_RANK_TIME + mLevel, newRankTime.toString());
 					editor.commit();
+
+					// ArrayList<String> listTopTime = new
+					// ArrayList<String>(setTopTime);
+					// for (String time : listTopTime) {
+					// Log.i("puzzleDone", time + " - string");
+					// if (df.parse(time.substring(0, 5)).getTime() >
+					// df.parse(newTime).getTime()) {
+					// listTopTime.add(listTopTime.indexOf(time), newTime + "-"
+					// + name);
+					// break;
+					// }
+					// }
+					//
+					// String longestTime = listTopTime.get(listTopTime.size() -
+					// 1);
+					// if (df.parse(newTime).getTime() >
+					// df.parse(longestTime.substring(0, 5)).getTime()) {
+					// listTopTime.add(newTime + "-" + name);
+					// }
+					//
+					// if (listTopTime.size() > 10) {
+					// listTopTime.remove(listTopTime.size() - 1);
+					// }
+					//
+					// Editor editor = sharedPrefScore.edit();
+					// editor.putStringSet(KEY_RANK_TIME + mLevel, new
+					// HashSet<String>(listTopTime));
+					// editor.commit();
 				} else {
-					ArrayList<String> listTopTime = new ArrayList<String>();
-					listTopTime.add(newTime + "-" + name);
-					
-					Editor editor = sharedPrefScore.edit();
-					editor.putStringSet(KEY_RANK_TIME + mLevel, new HashSet<String>(listTopTime));
+					// ArrayList<String> listTopTime = new ArrayList<String>();
+					// listTopTime.add(newTime + "-" + name);
+					String value = newTime + "-" + name;
+					Editor editor = mPuzzlePref.edit();
+					editor.putString(KEY_RANK_TIME + mLevel, value);
 					editor.commit();
 				}
 
@@ -488,8 +593,12 @@ public class MainActivity extends Activity {
 			long nowTime = System.currentTimeMillis();
 			Date date = new Date();
 			date.setTime(nowTime - mTimeStart);
+			if (date.getTime() >= 60 * 60 * 1000) {
+				loseGame();
+				return;
+			}
 
-			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("mm:ss");
+			SimpleDateFormat simpleDateFormat = new SimpleDateFormat(TIME_FORMAT);
 			final String strDate = simpleDateFormat.format(date);
 
 			runOnUiThread(new Runnable() {
@@ -501,6 +610,27 @@ public class MainActivity extends Activity {
 			});
 		}
 
+	}
+
+	public void loseGame() {
+		if (mTimer != null) {
+			mTimer.cancel();
+		}
+		mBtnRandom.setEnabled(true);
+		mBtnStart.setEnabled(true);
+
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setMessage("You lose!");
+		builder.setCancelable(false);
+		builder.setPositiveButton("OK", new OnClickListener() {
+
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				dialog.dismiss();
+			}
+		});
+		AlertDialog alert = builder.create();
+		alert.show();
 	}
 
 }

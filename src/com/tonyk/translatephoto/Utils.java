@@ -38,6 +38,7 @@ public class Utils {
 				bm = BitmapFactory.decodeFile(pathFile, o2);
 			} catch (OutOfMemoryError e1) {
 				Log.e("TAG", "ERROR = " + e1.getMessage());
+				bm = resizeBitmap(pathFile, requiredSize / 2);
 			}
 
 			if (bm == null) {

@@ -26,7 +26,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="0.4"
             android:gravity="center"
-            android:text="TIME"
+            android:text="@string/time_title_text"
             android:textStyle="bold"
             android:textColor="@android:color/white" />
 
@@ -35,7 +35,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
             android:paddingLeft="20dp"
-            android:text="USER"
+            android:text="@string/user_title_text"
             android:textStyle="bold"
             android:textColor="@android:color/white" />
 
@@ -44,8 +44,9 @@
     <ListView
         android:id="@+id/lvScore"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/llTitleBar" >
+        android:layout_height="match_parent"
+        android:layout_below="@id/llTitleBar"
+        android:footerDividersEnabled="true" >
     </ListView>
 
 </RelativeLayout>

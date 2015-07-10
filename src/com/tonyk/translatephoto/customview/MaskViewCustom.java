@@ -2,10 +2,8 @@ package com.tonyk.translatephoto.customview;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PorterDuff.Mode;
 import android.graphics.PorterDuffXfermode;
@@ -30,7 +28,6 @@ public class MaskViewCustom extends View implements View.OnTouchListener {
 	boolean inside = false;
 	boolean onside = false;
 
-	private float maskScale = 1f;
 	private float matrixScale = 1f;
 
 	public float DEFAULT_WIDTH;
@@ -115,25 +112,7 @@ public class MaskViewCustom extends View implements View.OnTouchListener {
 		temp.drawRect(cx + DEFAULT_WIDTH * scale - BORDER_SIZE, cy - BORDER_SIZE * 2, cx
 				+ DEFAULT_WIDTH * scale + BORDER_SIZE * 2, cy + BORDER_SIZE, paint);
 
-		// temp.drawCircle(cx, cy, 210, paint);
-		// temp.drawCircle(cx, cy, 200, transparentPaint);
-		// temp.drawBitmap(mask, matrix, paint);
 		canvas.drawBitmap(bmp, 0, 0, null);
-
-		// paint.setColor(Color.TRANSPARENT);
-		// paint.setXfermode(new PorterDuffXfermode(Mode.DST_IN));
-		// if (bmp != null) {
-		// canvas.drawBitmap(bmp, 0, 0, new Paint());
-		// }
-		// canvas.drawARGB(128, 128, 128, 128);
-		// // if (bmp != null) {
-		// // canvas.drawBitmap(bmp, 0, 0, null);
-		// // }
-		// Bitmap mask =
-		// BitmapFactory.decodeResource(getResources(),R.drawable.mask);
-		// canvas.drawBitmap(mask, 200, 300, paint);
-		//
-		// paint.setXfermode(null);
 
 		super.onDraw(canvas);
 	}
@@ -141,6 +120,7 @@ public class MaskViewCustom extends View implements View.OnTouchListener {
 	@Override
 	protected void onSizeChanged(int w, int h, int oldw, int oldh) {
 		super.onSizeChanged(w, h, oldw, oldh);
+		Log.i("onSizeChanged", "W:" + w + " - H:" + h);
 		int smallSide = getWidth();
 		if (smallSide > getHeight()) {
 			smallSide = getHeight();
@@ -152,6 +132,7 @@ public class MaskViewCustom extends View implements View.OnTouchListener {
 		cy = getHeight() / 2 - DEFAULT_HEIGHT / 2;
 		maskCenterX = cx + DEFAULT_WIDTH / 2;
 		maskCenterY = cy + DEFAULT_HEIGHT / 2;
+		scale = 1f;
 		Log.i("onSizeChanged", "w-" + w);
 		bmp = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
 		// bmp.eraseColor(Color.TRANSPARENT);
@@ -204,7 +185,6 @@ public class MaskViewCustom extends View implements View.OnTouchListener {
 
 				matrixScale = (float) (dis2 / dis1);
 
-				maskScale *= matrixScale;
 				scale *= matrixScale;
 				checkOutOfViewZoom();
 				dis1 = dis2;
@@ -226,7 +206,7 @@ public class MaskViewCustom extends View implements View.OnTouchListener {
 		return true;
 	}
 
-	public void checkOutOfView() {
+	private void checkOutOfView() {
 		if (cx <= BORDER_SIZE / 2 && cx + DEFAULT_WIDTH * scale >= getWidth() - BORDER_SIZE / 2) {
 			cx = BORDER_SIZE / 2;
 			scale = (getWidth() - BORDER_SIZE) / DEFAULT_WIDTH;
@@ -246,7 +226,7 @@ public class MaskViewCustom extends View implements View.OnTouchListener {
 		}
 	}
 
-	public void checkOutOfViewZoom() {
+	private void checkOutOfViewZoom() {
 		if (cx <= BORDER_SIZE / 2 && cx + DEFAULT_WIDTH * scale >= getWidth() - BORDER_SIZE / 2) {
 			cx = BORDER_SIZE / 2;
 			cy = preCy;
@@ -272,43 +252,12 @@ public class MaskViewCustom extends View implements View.OnTouchListener {
 		}
 	}
 
-	public void checkOutOfViewOnside(float matrixScale) {
-		if (cx <= BORDER_SIZE / 2) {
-			cx = BORDER_SIZE / 2;
-			return;
-		}
-		if (cy <= BORDER_SIZE / 2) {
-			cy = BORDER_SIZE / 2;
-			return;
-		}
-		if (cx + DEFAULT_WIDTH * scale * matrixScale >= getWidth() - BORDER_SIZE / 2) {
-			cx = getWidth() - DEFAULT_WIDTH * scale - BORDER_SIZE / 2;
-			return;
-		}
-		if (cy + DEFAULT_HEIGHT * scale * matrixScale >= getHeight() - BORDER_SIZE / 2) {
-			cy = getHeight() - DEFAULT_HEIGHT * scale - BORDER_SIZE / 2;
-			return;
-		}
-		scale *= matrixScale;
-		dis1 = dis2;
-	}
-
-	public boolean isOutOfView() {
-		return (cx <= BORDER_SIZE / 2 || cy <= BORDER_SIZE / 2
-				|| cx + DEFAULT_WIDTH * scale >= getWidth() - BORDER_SIZE / 2 || cy + DEFAULT_HEIGHT
-				* scale >= getHeight() - BORDER_SIZE / 2);
-	}
-
-	public boolean insideCircle(float x, float y) {
-		return ((x - cx) * (x - cx) + (y - cy) * (y - cy)) < 200 * 200;
-	}
-
-	public boolean insideRect(float x, float y) {
+	private boolean insideRect(float x, float y) {
 		return (x > cx + ONSIDE_BORDER) && (x < cx + DEFAULT_WIDTH * scale - ONSIDE_BORDER)
 				&& (y > cy + ONSIDE_BORDER) && (y < cy + DEFAULT_HEIGHT * scale - ONSIDE_BORDER);
 	}
 
-	public boolean onsideRect(float x, float y) {
+	private boolean onsideRect(float x, float y) {
 		return (Math.abs(x - cx) <= ONSIDE_BORDER)
 				|| (Math.abs(x - cx - DEFAULT_WIDTH * scale) <= ONSIDE_BORDER)
 				|| (Math.abs(y - cy) <= ONSIDE_BORDER)
