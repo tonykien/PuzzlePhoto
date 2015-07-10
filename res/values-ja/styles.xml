@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Application theme. -->
+    <style name="AppTheme" parent="@style/Theme.AppCompat.Light">
+        <item name="android:windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+        <item name="android:windowContentOverlay">@null</item>
+    </style>
+    
+    <style name="RankTimeTheme" parent="@style/Theme.AppCompat.Light">
+        <item name="android:windowNoTitle">false</item>
+        <item name="windowActionBar">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+    </style>
+
+    <style name="BtnStyle">
+        <item name="android:textColor">@drawable/btn_text_color_state</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
+</resources>

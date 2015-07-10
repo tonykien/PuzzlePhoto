@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">フォトパズル</string>
+    <string name="msg_your_time">時間 : %s</string>
+    <string name="congratulate">祝福！最高な時間を持っています！</string>
+    <string name="msg_you_done">完了しました！</string>
+    <string name="cancel">キャンセル</string>
+    <string name="save">保存</string>
+    <string name="done">完了</string>
+    <string name="ok">OK</string>
+    <string name="your_name">名前 :</string>
+    <string name="choose_level_and_photo">レベルと写真を選択してください</string>
+    <string name="time_text">"時間 : "</string>
+    <string name="best_time_text">"ベスト: "</string>
+    <string name="reset_text">リセット</string>
+    <string name="auto_text">乱す</string>
+    <string name="start_text">開始</string>
+    <string name="time_title_text">タイム</string>
+    <string name="user_title_text">ユーザー</string>
+    <string name="easy_text">イージー</string>
+    <string name="medium_text">ノーマル</string>
+    <string name="hard_text">ハード</string>
+    <string name="easy_3x4_text">イージー (3x4)</string>
+    <string name="medium_4x4_text">ノーマル (4x4)</string>
+    <string name="hard_5x5_text">ハード (5x5)</string>
+    <string name="get_photo_from_gallery">ギャラリーから選択する</string>
+    <string name="msg_lose_game">あなたが失います！</string>
+    <string name="msg_error_photo">エラーの写真!</string>
+    <string name="msg_something_wrong">何かエラーが発生しました！</string>
+    <string name="msg_please_input_name">入力名してください！</string>
+    <string name="play_text">ゲームスタート</string>
+    <string name="high_score_text">ハイスコア</string>
+
+</resources>
