@@ -120,7 +120,7 @@
                 android:layout_margin="10dp"
                 android:paddingLeft="20dp"
                 android:paddingRight="20dp"
-                android:background="@drawable/fab_shape_rectangle"
+                android:background="@drawable/flat_btn_selector"
                 android:onClick="onBtnGalleryClick"
                 android:text="@string/get_photo_from_gallery"
                 android:textColor="#ffffff" />

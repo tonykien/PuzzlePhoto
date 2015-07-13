@@ -14,7 +14,7 @@ import android.view.View;
 
 public class MaskViewCustom extends View implements View.OnTouchListener {
 
-	private static final float BORDER_SIZE = 6;
+	private float BORDER_SIZE = 3;
 	private static final float ONSIDE_BORDER = 30;
 	private float RECT_RATIO = 1f;
 
@@ -46,6 +46,8 @@ public class MaskViewCustom extends View implements View.OnTouchListener {
 		paint.setColor(Color.GREEN);
 
 		setOnTouchListener(this);
+		
+		BORDER_SIZE = (int) (BORDER_SIZE * getResources().getDisplayMetrics().density);
 	}
 
 	public MaskViewCustom(Context context, AttributeSet attrs) {
@@ -60,6 +62,8 @@ public class MaskViewCustom extends View implements View.OnTouchListener {
 		paint.setColor(Color.GREEN);
 
 		setOnTouchListener(this);
+		
+		BORDER_SIZE = (int) (BORDER_SIZE * getResources().getDisplayMetrics().density);
 	}
 
 	public void setBitmap(Bitmap bmp) {

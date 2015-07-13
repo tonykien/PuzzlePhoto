@@ -75,7 +75,7 @@
         android:text="@string/high_score_text"
         android:textColor="#ffffff"
         android:onClick="onBtnHighScoreClick"
-        android:background="@drawable/fab_shape_rectangle" />
+        android:background="@drawable/flat_btn_selector" />
     
     <Button
         android:id="@+id/btnPlay"
@@ -86,6 +86,6 @@
         android:layout_marginBottom="20dp"
         android:text="@string/play_text"
         android:textColor="#ffffff"
-        android:background="@drawable/fab_shape_rectangle" />
+        android:background="@drawable/flat_btn_selector" />
 
 </RelativeLayout>

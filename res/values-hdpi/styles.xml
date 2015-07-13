@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <style name="BtnStyle" parent="@android:attr/buttonStyleSmall">
+        <item name="android:textColor">@drawable/btn_text_color_state</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
+</resources>

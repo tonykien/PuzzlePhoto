@@ -1,4 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="app_color">#00838f</color>
+    <color name="app_color">#0097a7</color>
+    
+    <color name="material_blue_500">#5677fc</color>
+    <color name="material_blue_700">#455ede</color>
+    <color name="material_green_A200">#5af158</color>
+    
+    <color name="color_primary">#5677fc</color>
+    
+    <color name="teal_500">#009688</color>
+    <color name="cyan_600">#00acc1</color>
+    <color name="cyan_800">#00838f</color>
+    <color name="red_500">#e51c23</color>
+    <color name="red_800">#c41411</color>
 </resources>

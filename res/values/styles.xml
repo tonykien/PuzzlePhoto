@@ -7,14 +7,14 @@
         <item name="windowActionBar">false</item>
         <item name="android:windowContentOverlay">@null</item>
     </style>
-    
+
     <style name="RankTimeTheme" parent="@style/Theme.AppCompat.Light">
         <item name="android:windowNoTitle">false</item>
         <item name="windowActionBar">true</item>
         <item name="android:windowContentOverlay">@null</item>
     </style>
 
-    <style name="BtnStyle">
+    <style name="BtnStyle" parent="@android:attr/buttonStyleSmall">
         <item name="android:textColor">@drawable/btn_text_color_state</item>
         <item name="android:textSize">14sp</item>
     </style>

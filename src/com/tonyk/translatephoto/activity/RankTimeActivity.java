@@ -34,7 +34,7 @@ public class RankTimeActivity extends ActionBarActivity {
 		@Override
 		public void onTabSelected(Tab tab, FragmentTransaction arg1) {
 			mPager.setCurrentItem(tab.getPosition());
-
+			
 		}
 
 		@Override
@@ -64,10 +64,10 @@ public class RankTimeActivity extends ActionBarActivity {
 		Tab tabEasy = actionBar.newTab().setText(R.string.easy_text);
 		tabEasy.setTabListener(mTabListener);
 
-		Tab tabMedium = actionBar.newTab().setText("Medium");
+		Tab tabMedium = actionBar.newTab().setText(R.string.medium_text);
 		tabMedium.setTabListener(mTabListener);
 
-		Tab tabHard = actionBar.newTab().setText("Hard");
+		Tab tabHard = actionBar.newTab().setText(R.string.hard_text);
 		tabHard.setTabListener(mTabListener);
 
 		actionBar.addTab(tabEasy);

@@ -8,7 +8,7 @@
         android:id="@+id/llTitleBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#00838f"
+        android:background="@color/app_color"
         android:orientation="horizontal"
         android:padding="10dp"
         android:weightSum="1" >
