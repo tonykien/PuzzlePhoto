@@ -13,4 +13,8 @@
     <color name="cyan_800">#00838f</color>
     <color name="red_500">#e51c23</color>
     <color name="red_800">#c41411</color>
+    
+    <color name="gold_color">#FFD700</color>
+    <color name="silver_color">#c0c0c0</color>
+    <color name="bronze_color">#cd7f32</color>
 </resources>

@@ -3,6 +3,6 @@
     android:id="@+id/pager"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.tonyk.translatephoto.activity.RankTimeActivity"
+    tools:context="com.tonyk.puzzlephoto.activity.RankTimeActivity"
     tools:ignore="MergeRootFrame" />
 

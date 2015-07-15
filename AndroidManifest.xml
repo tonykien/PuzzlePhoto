@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.tonyk.translatephoto"
+    package="com.tonyk.puzzlephoto"
     android:versionCode="1"
     android:versionName="1.0" >
 
@@ -19,10 +19,10 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".activity.MainActivity"
+            android:name="com.tonyk.puzzlephoto.activity.MainActivity"
             android:label="@string/app_name" >
         </activity>
-        <activity android:name=".activity.TopActivity" >
+        <activity android:name="com.tonyk.puzzlephoto.activity.TopActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -42,19 +42,19 @@
             android:value="@integer/google_play_services_version" />
 
         <activity
-            android:name=".activity.HighScoreActivity"
+            android:name="com.tonyk.puzzlephoto.activity.HighScoreActivity"
             android:label="@string/title_activity_high_score" >
         </activity>
         <activity
-            android:name=".activity.SelectPhotoActivity"
+            android:name="com.tonyk.puzzlephoto.activity.SelectPhotoActivity"
             android:label="@string/title_activity_select_photo" >
         </activity>
         <activity
-            android:name=".activity.CropPhotoActivity"
+            android:name="com.tonyk.puzzlephoto.activity.CropPhotoActivity"
             android:label="@string/title_activity_crop_photo" >
         </activity>
         <activity
-            android:name="com.tonyk.translatephoto.activity.RankTimeActivity"
+            android:name="com.tonyk.puzzlephoto.activity.RankTimeActivity"
             android:label="@string/title_activity_rank_time"
             android:theme="@style/RankTimeTheme" >
         </activity>

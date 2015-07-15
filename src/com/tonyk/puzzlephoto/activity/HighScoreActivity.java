@@ -1,4 +1,4 @@
-package com.tonyk.translatephoto.activity;
+package com.tonyk.puzzlephoto.activity;
 
 import java.util.ArrayList;
 import java.util.Arrays;

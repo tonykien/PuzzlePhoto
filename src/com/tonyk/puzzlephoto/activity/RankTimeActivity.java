@@ -1,4 +1,4 @@
-package com.tonyk.translatephoto.activity;
+package com.tonyk.puzzlephoto.activity;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;

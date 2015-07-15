@@ -70,9 +70,12 @@
             android:layout_height="wrap_content"
             android:layout_alignBottom="@+id/textView2"
             android:layout_toRightOf="@+id/textView2"
+            android:layout_toLeftOf="@+id/imageButton2"
+            android:layout_marginRight="8dp"
             android:text="@string/start_time"
             android:textColor="#ffffff"
-            android:maxLength="15" />
+            android:ellipsize="end"
+            android:singleLine="true" />
 
         <ImageButton
             android:id="@+id/imageButton1"
@@ -100,7 +103,7 @@
 
     </RelativeLayout>
     
-    <com.tonyk.translatephoto.customview.PhotoViewCustom
+    <com.tonyk.puzzlephoto.customview.PhotoViewCustom
         android:id="@+id/photoview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

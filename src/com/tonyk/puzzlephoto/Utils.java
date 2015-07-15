@@ -1,4 +1,4 @@
-package com.tonyk.translatephoto;
+package com.tonyk.puzzlephoto;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;

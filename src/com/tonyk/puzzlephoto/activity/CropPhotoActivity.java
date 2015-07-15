@@ -1,4 +1,4 @@
-package com.tonyk.translatephoto.activity;
+package com.tonyk.puzzlephoto.activity;
 
 import java.io.ByteArrayOutputStream;
 
@@ -14,9 +14,9 @@ import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
 import android.widget.Toast;
 
+import com.tonyk.puzzlephoto.Utils;
+import com.tonyk.puzzlephoto.customview.MaskViewCustom;
 import com.tonyk.translatephoto.R;
-import com.tonyk.translatephoto.Utils;
-import com.tonyk.translatephoto.customview.MaskViewCustom;
 
 public class CropPhotoActivity extends Activity {
 

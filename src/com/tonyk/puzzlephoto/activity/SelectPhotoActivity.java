@@ -1,4 +1,4 @@
-package com.tonyk.translatephoto.activity;
+package com.tonyk.puzzlephoto.activity;
 
 import android.app.Activity;
 import android.content.Intent;

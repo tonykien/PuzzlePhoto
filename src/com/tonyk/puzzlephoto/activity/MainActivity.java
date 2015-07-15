@@ -1,4 +1,4 @@
-package com.tonyk.translatephoto.activity;
+package com.tonyk.puzzlephoto.activity;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -40,10 +40,10 @@ import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
-import com.tonyk.translatephoto.BitmapObject;
+import com.tonyk.puzzlephoto.BitmapObject;
+import com.tonyk.puzzlephoto.Utils;
+import com.tonyk.puzzlephoto.customview.PhotoViewCustom;
 import com.tonyk.translatephoto.R;
-import com.tonyk.translatephoto.Utils;
-import com.tonyk.translatephoto.customview.PhotoViewCustom;
 
 public class MainActivity extends Activity {
 
@@ -81,7 +81,7 @@ public class MainActivity extends Activity {
 	private boolean mMusicOn = true;
 
 	private boolean mIsStarted = false;
-	
+
 	private InterstitialAd mInterstitialAd;
 	private SharedPreferences mPuzzlePref;
 
@@ -89,7 +89,7 @@ public class MainActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		
+
 		mLevel = getIntent().getIntExtra(KEY_LEVEL, LEVEL_MEDIUM);
 		mDrawableId = getIntent().getIntExtra(KEY_PHOTO, 0);
 
@@ -100,20 +100,36 @@ public class MainActivity extends Activity {
 		AdView mAdView = (AdView) findViewById(R.id.adView);
 		AdRequest adRequest = new AdRequest.Builder().build();
 		mAdView.loadAd(adRequest);
-		
+
 		mInterstitialAd = new InterstitialAd(this);
-        mInterstitialAd.setAdUnitId(getResources().getString(R.string.interstitial_ad_unit_id));
-        requestNewInterstitial();
-        mInterstitialAd.setAdListener(new AdListener() {
-            @Override
-            public void onAdClosed() {
-                requestNewInterstitial();
-            }
-        });
+		mInterstitialAd.setAdUnitId(getResources().getString(R.string.interstitial_ad_unit_id));
+		mInterstitialAd.setAdListener(new AdListener() {
+			@Override
+			public void onAdClosed() {
+				requestNewInterstitial();
+			}
+
+			@Override
+			public void onAdLoaded() {
+				if (mIsStarted) {
+					int saveCount = mPuzzlePref.getInt(KEY_SAVE_COUNT, 0);
+					Log.i("onAdLoaded", "saveCount: " + saveCount);
+					if (saveCount < 20) {
+						if ((saveCount % 5) == 0) {
+							mInterstitialAd.show();
+						}
+					} else {
+						if ((saveCount % 3) == 0) {
+							mInterstitialAd.show();
+						}
+					}
+				}
+				super.onAdLoaded();
+			}
+		});
 
 		mTvBestTime = (TextView) findViewById(R.id.tvBestTime);
-		mPuzzlePref = getSharedPreferences(PREF_PUZZLE_PHOTO,
-				Context.MODE_PRIVATE);
+		mPuzzlePref = getSharedPreferences(PREF_PUZZLE_PHOTO, Context.MODE_PRIVATE);
 		String bestTime = mPuzzlePref.getString(KEY_BEST_TIME + mLevel, "--:--");
 		mTvBestTime.setText(bestTime);
 
@@ -224,13 +240,12 @@ public class MainActivity extends Activity {
 	}
 
 	private void requestNewInterstitial() {
-        AdRequest adRequest = new AdRequest.Builder()
-                  .addTestDevice("510A6EBB684C5FE74FB127A57DF9580C")
-                  .build();
+		AdRequest adRequest = new AdRequest.Builder()
+		// .addTestDevice("510A6EBB684C5FE74FB127A57DF9580C")
+				.build();
+		mInterstitialAd.loadAd(adRequest);
+	}
 
-        mInterstitialAd.loadAd(adRequest);
-    }
-	
 	public void onBtnRandomClick(View v) {
 		mPhotoview.disableSound();
 		mPhotoview.random();
@@ -265,6 +280,7 @@ public class MainActivity extends Activity {
 	}
 
 	public void onBtnStartClick(View v) {
+		Toast.makeText(this, R.string.game_started, Toast.LENGTH_SHORT).show();
 		if (mSoundOn) {
 			MediaPlayer mpStart = MediaPlayer.create(this, R.raw.start_bell);
 			mpStart.start();
@@ -434,7 +450,7 @@ public class MainActivity extends Activity {
 
 		TextView tvTimer = (TextView) dialog.findViewById(R.id.tvTime);
 		final EditText etName = (EditText) dialog.findViewById(R.id.etName);
-		
+
 		// filter edittext (cannot input ',')
 		InputFilter filter = new InputFilter() {
 			public CharSequence filter(CharSequence source, int start, int end, Spanned dest,
@@ -456,6 +472,7 @@ public class MainActivity extends Activity {
 
 		tvTimer.setText(String.format(getResources().getString(R.string.msg_your_time),
 				mTvTimeCounter.getText()));
+
 		Button cancelBtn = (Button) dialog.findViewById(R.id.btnDialogCancel);
 		cancelBtn.setOnClickListener(new View.OnClickListener() {
 
@@ -471,30 +488,61 @@ public class MainActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				// TODO
 				String name = etName.getText().toString().trim();
 				if (!name.isEmpty()) {
 					addNewRecord(name);
 					dialog.dismiss();
-					
-					int saveCount = mPuzzlePref.getInt(KEY_SAVE_COUNT, 0);
-					saveCount += 1;
-					if (saveCount < 20) {
-						if ((saveCount % 5) == 0 && mInterstitialAd.isLoaded()) {
-		                    mInterstitialAd.show();
-		                }
-					} else {
-						if ((saveCount % 3) == 0 && mInterstitialAd.isLoaded()) {
-		                    mInterstitialAd.show();
-		                }
-					}
+
 				} else {
-					// TODO name empty
-					Toast.makeText(MainActivity.this, R.string.msg_please_input_name, Toast.LENGTH_SHORT).show();
+					Toast.makeText(MainActivity.this, R.string.msg_please_input_name,
+							Toast.LENGTH_SHORT).show();
 				}
-				
+
 			}
 		});
+
+		final int saveCount = mPuzzlePref.getInt(KEY_SAVE_COUNT, 0) + 1;
+		mPuzzlePref.edit().putInt(KEY_SAVE_COUNT, saveCount).commit();
+		// show adv
+		if (mInterstitialAd.isLoaded()) {
+			Thread thread = new Thread(new Runnable() {
+
+				@Override
+				public void run() {
+					try {
+						Thread.sleep(3000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+
+					if (saveCount < 20) {
+						if ((saveCount % 5) == 0) {
+							runOnUiThread(new Runnable() {
+
+								@Override
+								public void run() {
+									mInterstitialAd.show();
+								}
+							});
+						}
+					} else {
+						if ((saveCount % 3) == 0) {
+							runOnUiThread(new Runnable() {
+
+								@Override
+								public void run() {
+									mInterstitialAd.show();
+								}
+							});
+						}
+					}
+				}
+			});
+			thread.start();
+		} else {
+			requestNewInterstitial();
+		}
+
 	}
 
 	private void addNewRecord(String name) {
@@ -503,8 +551,8 @@ public class MainActivity extends Activity {
 			try {
 				// Update best time
 				SimpleDateFormat df = new SimpleDateFormat(TIME_FORMAT);
-				String oldBestTime = mPuzzlePref.getString(KEY_BEST_TIME + mLevel,
-						"59:59-username").substring(0, 5);
+				String oldBestTime = mPuzzlePref
+						.getString(KEY_BEST_TIME + mLevel, "59:59-username").substring(0, 5);
 				if (df.parse(oldBestTime).getTime() > df.parse(newTime).getTime()) {
 					mPuzzlePref.edit().putString(KEY_BEST_TIME + mLevel, newTime + "-" + name)
 							.commit();

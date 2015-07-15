@@ -11,7 +11,7 @@
     <string name="ok">OK</string>
     <string name="your_name">名前 :</string>
     <string name="choose_level_and_photo">レベルと写真を選択してください</string>
-    <string name="time_text">"時間 : "</string>
+    <string name="time_text">"タイム: "</string>
     <string name="best_time_text">"ベスト: "</string>
     <string name="reset_text">リセット</string>
     <string name="auto_text">乱す</string>
@@ -31,5 +31,6 @@
     <string name="msg_please_input_name">入力名してください！</string>
     <string name="play_text">ゲームスタート</string>
     <string name="high_score_text">ハイスコア</string>
+    <string name="game_started">ゲームが開始します！</string>
 
 </resources>

@@ -1,4 +1,4 @@
-package com.tonyk.translatephoto;
+package com.tonyk.puzzlephoto;
 
 import android.graphics.Bitmap;
 import android.graphics.Point;

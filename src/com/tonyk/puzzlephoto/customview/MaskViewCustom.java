@@ -1,4 +1,4 @@
-package com.tonyk.translatephoto.customview;
+package com.tonyk.puzzlephoto.customview;
 
 import android.content.Context;
 import android.graphics.Bitmap;

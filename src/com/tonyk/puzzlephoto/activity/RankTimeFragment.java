@@ -1,4 +1,4 @@
-package com.tonyk.translatephoto.activity;
+package com.tonyk.puzzlephoto.activity;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -95,6 +95,14 @@ public class RankTimeFragment extends Fragment {
 				tvTime.setText(scoreParts[0]);
 				tvName.setText(scoreParts[1]);
 				tvRank.setText((position + 1) + "");
+				
+				if (position == 0) {
+					convertView.setBackgroundColor(mContext.getResources().getColor(R.color.gold_color));
+				} else if (position == 1) {
+					convertView.setBackgroundColor(mContext.getResources().getColor(R.color.silver_color));
+				} else if (position == 2) {
+					convertView.setBackgroundColor(mContext.getResources().getColor(R.color.bronze_color));
+				}
 			}
 
 			return convertView;

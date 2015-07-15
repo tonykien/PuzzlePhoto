@@ -91,7 +91,7 @@
             android:scaleType="fitCenter"
             android:src="@drawable/ic_launcher" />
 
-        <com.tonyk.translatephoto.customview.MaskViewCustom
+        <com.tonyk.puzzlephoto.customview.MaskViewCustom
             android:id="@+id/maskView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

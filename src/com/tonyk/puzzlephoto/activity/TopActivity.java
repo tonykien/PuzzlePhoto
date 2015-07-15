@@ -1,4 +1,4 @@
-package com.tonyk.translatephoto.activity;
+package com.tonyk.puzzlephoto.activity;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -31,5 +31,11 @@ public class TopActivity extends Activity {
 	public void onBtnHighScoreClick(View v) {
 		Intent i = new Intent(TopActivity.this, RankTimeActivity.class);
 		startActivity(i);
+	}
+	
+	@Override
+	public void onBackPressed() {
+		// TODO Auto-generated method stub
+		super.onBackPressed();
 	}
 }

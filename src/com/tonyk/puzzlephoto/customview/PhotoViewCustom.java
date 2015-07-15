@@ -1,4 +1,4 @@
-package com.tonyk.translatephoto.customview;
+package com.tonyk.puzzlephoto.customview;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -17,9 +17,9 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
-import com.tonyk.translatephoto.BitmapObject;
+import com.tonyk.puzzlephoto.BitmapObject;
+import com.tonyk.puzzlephoto.activity.MainActivity;
 import com.tonyk.translatephoto.R;
-import com.tonyk.translatephoto.activity.MainActivity;
 
 public class PhotoViewCustom extends View implements View.OnTouchListener {
 

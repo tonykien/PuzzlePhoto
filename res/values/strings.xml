@@ -41,5 +41,6 @@
     <string name="msg_please_input_name">Please input name!</string>
     <string name="play_text">Play</string>
     <string name="high_score_text">High Score</string>
+    <string name="game_started">Game started!</string>
 
 </resources>
