@@ -19,15 +19,15 @@
     <RelativeLayout
         android:id="@+id/rlTop"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="@dimen/main_top_high"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:background="@color/app_color" >
 
         <ImageView
             android:id="@+id/ivPhoto"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_width="@dimen/main_top_high"
+            android:layout_height="@dimen/main_top_high"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:scaleType="fitCenter"
@@ -39,8 +39,8 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
-            android:layout_marginTop="20dp"
-            android:layout_marginLeft="20dp"
+            android:layout_marginTop="@dimen/main_element_margin"
+            android:layout_marginLeft="@dimen/main_element_margin"
             android:text="@string/time_text"
             android:textColor="#ffffff" />
 
@@ -59,8 +59,8 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_below="@id/textView1"
-            android:layout_marginTop="20dp"
-            android:layout_marginLeft="20dp"
+            android:layout_marginTop="@dimen/main_element_margin"
+            android:layout_marginLeft="@dimen/main_element_margin"
             android:text="@string/best_time_text"
             android:textColor="#ffffff" />
 
@@ -82,7 +82,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignBottom="@id/tvBestTime"
-            android:layout_marginRight="22dp"
+            android:layout_marginRight="16dp"
             android:layout_toLeftOf="@+id/ivPhoto"
             android:src="@drawable/icon_sound_on"
             android:contentDescription="@string/hello_world"
@@ -94,7 +94,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignBottom="@id/tvTimeCounter"
-            android:layout_marginRight="22dp"
+            android:layout_marginRight="16dp"
             android:layout_toLeftOf="@+id/ivPhoto"
             android:src="@drawable/icon_music_on"
             android:contentDescription="@string/hello_world"

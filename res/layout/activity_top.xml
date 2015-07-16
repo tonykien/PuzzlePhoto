@@ -8,7 +8,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:src="@drawable/puzzle_top_bg"
-        android:scaleType="centerCrop"/>
+        android:scaleType="centerCrop"
+        android:contentDescription="@string/hello_world" />
     
     <View 
         android:layout_width="match_parent"
@@ -67,25 +68,39 @@
             android:background="@drawable/radiobtn_selector" />
     </RadioGroup> -->
 
-    <Button
-        android:id="@+id/btnHighScore"
-        android:layout_width="200dp"
+    <LinearLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:text="@string/high_score_text"
-        android:textColor="#ffffff"
-        android:onClick="onBtnHighScoreClick"
-        android:background="@drawable/flat_btn_selector" />
-    
-    <Button
-        android:id="@+id/btnPlay"
-        android:layout_width="200dp"
+        android:orientation="vertical" >
+
+        <Button
+            android:id="@+id/btnPlay"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/flat_btn_selector"
+            android:text="@string/play_text"
+            android:textColor="#ffffff" />
+        
+        <Button
+            android:id="@+id/btnHighScore"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/flat_btn_selector"
+            android:onClick="onBtnHighScoreClick"
+            android:text="@string/high_score_text"
+            android:textColor="#ffffff" />
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@id/btnHighScore"
+        android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="20dp"
-        android:text="@string/play_text"
-        android:textColor="#ffffff"
-        android:background="@drawable/flat_btn_selector" />
+        android:layout_marginTop="10dp"
+        android:src="@drawable/puzzle_text_logo"
+        android:contentDescription="@string/hello_world" />
 
 </RelativeLayout>

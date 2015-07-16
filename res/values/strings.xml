@@ -35,12 +35,22 @@
     <string name="medium_4x4_text">Medium (4x4)</string>
     <string name="hard_5x5_text">Hard (5x5)</string>
     <string name="get_photo_from_gallery">Get photo from Gallery</string>
-    <string name="msg_lose_game">You lose!</string>
+    <string name="msg_time_out">Time out!</string>
     <string name="msg_error_photo">Error photo!</string>
     <string name="msg_something_wrong">Something went wrong!</string>
     <string name="msg_please_input_name">Please input name!</string>
     <string name="play_text">Play</string>
     <string name="high_score_text">High Score</string>
     <string name="game_started">Game started!</string>
+    <string name="exit_app_title">Exit game</string>
+    <string name="exit_text">Exit</string>
+    <string name="rate_text">Rate</string>
+    <string name="msg_rate_app">Do you like this game?</string>
+    <string name="crop_text">Crop</string>
+    <string name="tut_auto_btn">Press this button to derange the photo.</string>
+    <string name="tut_start_btn">Press this button to start the game.</string>
+    <string name="tut_reset_btn">Press this button to return original state.</string>
+    <string name="tut_sound_btn">Press this button to on/off sound.</string>
+    <string name="tut_music_btn">Press this button to on/off background music.</string>
 
 </resources>

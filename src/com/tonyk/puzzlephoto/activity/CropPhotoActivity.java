@@ -7,16 +7,15 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
 import android.widget.Toast;
 
+import com.tonyk.puzzlephoto.R;
 import com.tonyk.puzzlephoto.Utils;
 import com.tonyk.puzzlephoto.customview.MaskViewCustom;
-import com.tonyk.translatephoto.R;
 
 public class CropPhotoActivity extends Activity {
 
@@ -41,7 +40,6 @@ public class CropPhotoActivity extends Activity {
 			mMaskView.setRectRatio(4f / 3);
 		}
 		String pathName = getIntent().getStringExtra(SelectPhotoActivity.KEY_PHOTO_PATH);
-		Log.i("pathName", "pathName:" + pathName);
 		mBmpResized = Utils.resizeBitmap(pathName, 1000);
 
 		if (mBmpResized != null) {

@@ -15,7 +15,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
-import com.tonyk.translatephoto.R;
+import com.tonyk.puzzlephoto.R;
 
 public class SelectPhotoActivity extends Activity implements OnClickListener {
 

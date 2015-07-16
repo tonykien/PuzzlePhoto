@@ -1,6 +1,5 @@
 package com.tonyk.puzzlephoto.activity;
 
-import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -25,7 +24,6 @@ import android.os.Bundle;
 import android.text.InputFilter;
 import android.text.Spanned;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -41,9 +39,9 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
 import com.tonyk.puzzlephoto.BitmapObject;
+import com.tonyk.puzzlephoto.R;
 import com.tonyk.puzzlephoto.Utils;
 import com.tonyk.puzzlephoto.customview.PhotoViewCustom;
-import com.tonyk.translatephoto.R;
 
 public class MainActivity extends Activity {
 
@@ -59,6 +57,7 @@ public class MainActivity extends Activity {
 	public final static String KEY_PHOTO = "photo";
 	public final static String KEY_PHOTO_BYTES = "photo_bytes";
 	public final static String KEY_SAVE_COUNT = "save_count";
+	public final static String KEY_IS_FIRST = "is_the_first";
 
 	public final static String TIME_FORMAT = "mm:ss";
 
@@ -93,40 +92,8 @@ public class MainActivity extends Activity {
 		mLevel = getIntent().getIntExtra(KEY_LEVEL, LEVEL_MEDIUM);
 		mDrawableId = getIntent().getIntExtra(KEY_PHOTO, 0);
 
-		mBgSoundPlayer = MediaPlayer.create(this, R.raw.background_music_cut);
-		mBgSoundPlayer.setLooping(true);
-
 		// admob
-		AdView mAdView = (AdView) findViewById(R.id.adView);
-		AdRequest adRequest = new AdRequest.Builder().build();
-		mAdView.loadAd(adRequest);
-
-		mInterstitialAd = new InterstitialAd(this);
-		mInterstitialAd.setAdUnitId(getResources().getString(R.string.interstitial_ad_unit_id));
-		mInterstitialAd.setAdListener(new AdListener() {
-			@Override
-			public void onAdClosed() {
-				requestNewInterstitial();
-			}
-
-			@Override
-			public void onAdLoaded() {
-				if (mIsStarted) {
-					int saveCount = mPuzzlePref.getInt(KEY_SAVE_COUNT, 0);
-					Log.i("onAdLoaded", "saveCount: " + saveCount);
-					if (saveCount < 20) {
-						if ((saveCount % 5) == 0) {
-							mInterstitialAd.show();
-						}
-					} else {
-						if ((saveCount % 3) == 0) {
-							mInterstitialAd.show();
-						}
-					}
-				}
-				super.onAdLoaded();
-			}
-		});
+		initAdmob();
 
 		mTvBestTime = (TextView) findViewById(R.id.tvBestTime);
 		mPuzzlePref = getSharedPreferences(PREF_PUZZLE_PHOTO, Context.MODE_PRIVATE);
@@ -136,14 +103,83 @@ public class MainActivity extends Activity {
 		mPhotoview = (PhotoViewCustom) findViewById(R.id.photoview);
 		mPhotoview.setContext(this);
 		mTvTimeCounter = (TextView) findViewById(R.id.tvTimeCounter);
+		
 		ImageView ivPhoto = (ImageView) findViewById(R.id.ivPhoto);
-
+		initPhotoView(ivPhoto);
+		
 		mBtnRandom = (Button) findViewById(R.id.btnRandom);
 		mBtnReset = (Button) findViewById(R.id.btnReset);
 		mBtnStart = (Button) findViewById(R.id.btnStart);
 		disableStartBtn();
 		// mBtnReset.setEnabled(false);
 
+		checkTheFirstPlayGame();
+	}
+	
+	private void checkTheFirstPlayGame() {
+		boolean isTheFirst = mPuzzlePref.getBoolean(KEY_IS_FIRST, true);
+		if (isTheFirst) {
+			showDialogTutorial();
+			mPuzzlePref.edit().putBoolean(KEY_IS_FIRST, false).commit();
+		}
+	}
+	
+	private void showDialogTutorial() {
+		final Dialog dialog = new Dialog(this, android.R.style.Theme_Translucent_NoTitleBar);
+		dialog.setContentView(R.layout.dialog_tutorial);
+		dialog.show();
+		
+		ImageButton btnClose = (ImageButton) dialog.findViewById(R.id.btnClose);
+		btnClose.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				dialog.dismiss();
+				
+			}
+		});
+	}
+	
+	private void initAdmob() {
+		AdView mAdView = (AdView) findViewById(R.id.adView);
+		AdRequest adRequest = new AdRequest.Builder().build();
+		mAdView.loadAd(adRequest);
+
+		mInterstitialAd = new InterstitialAd(this);
+		mInterstitialAd.setAdUnitId(getResources().getString(R.string.interstitial_ad_unit_id));
+		mInterstitialAd.setAdListener(new AdListener() {
+			@Override
+			public void onAdClosed() {
+				// requestNewInterstitial();
+			}
+
+			@Override
+			public void onAdLoaded() {
+				mInterstitialAd.show();
+				//if (mIsStarted) {
+//					int saveCount = mPuzzlePref.getInt(KEY_SAVE_COUNT, 0);
+//					Log.i("onAdLoaded", "saveCount: " + saveCount);
+//					if (saveCount < 20) {
+//						if ((saveCount % 5) == 0) {
+//							mInterstitialAd.show();
+//						}
+//					} else {
+//						if ((saveCount % 3) == 0) {
+//							mInterstitialAd.show();
+//						}
+//					}
+				//}
+				super.onAdLoaded();
+			}
+			
+			@Override
+			public void onAdFailedToLoad(int errorCode) {
+				super.onAdFailedToLoad(errorCode);
+			}
+		});
+	}
+	
+	private void initPhotoView(ImageView ivPhoto) {
 		switch (mLevel) {
 		case LEVEL_EASY:
 			mRow = 4;
@@ -212,28 +248,11 @@ public class MainActivity extends Activity {
 		splitBitmap(bmp, mColumn, mRow);
 		mPhotoview.setBmpSize(bmp.getWidth() / mColumn + BORDER_SIZE * 2);
 		mPhotoview.invalidate();
-
 	}
-
-	// @Override
-	// protected void onStart() {
-	// if (mSoundPlayer != null && mSoundOn) {
-	// mSoundPlayer.start();
-	// }
-	// super.onStart();
-	// }
-	//
-	// @Override
-	// protected void onStop() {
-	// if (mSoundPlayer.isPlaying()) {
-	// mSoundPlayer.pause();
-	// }
-	// super.onStop();
-	// }
 
 	@Override
 	protected void onDestroy() {
-		if (mBgSoundPlayer.isPlaying()) {
+		if (mBgSoundPlayer != null && mBgSoundPlayer.isPlaying()) {
 			mBgSoundPlayer.stop();
 		}
 		super.onDestroy();
@@ -264,15 +283,8 @@ public class MainActivity extends Activity {
 		if (mSoundOn) {
 			mPhotoview.enableSound();
 		}
-		if (mBgSoundPlayer.isPlaying()) {
+		if (mBgSoundPlayer != null && mBgSoundPlayer.isPlaying()) {
 			mBgSoundPlayer.stop();
-			try {
-				mBgSoundPlayer.prepare();
-			} catch (IllegalStateException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
 		}
 		mBtnRandom.setEnabled(true);
 		disableStartBtn();
@@ -289,6 +301,8 @@ public class MainActivity extends Activity {
 				@Override
 				public void onCompletion(MediaPlayer mp) {
 					if (mMusicOn) {
+						mBgSoundPlayer = MediaPlayer.create(MainActivity.this, R.raw.background_music_cut);
+						mBgSoundPlayer.setLooping(true);
 						mBgSoundPlayer.start();
 					}
 
@@ -333,7 +347,7 @@ public class MainActivity extends Activity {
 	public void onBtnMusicClick(View v) {
 		if (mMusicOn) {
 			mMusicOn = false;
-			if (mBgSoundPlayer.isPlaying()) {
+			if (mBgSoundPlayer != null && mBgSoundPlayer.isPlaying()) {
 				mBgSoundPlayer.pause();
 			}
 			((ImageButton) v).setImageResource(R.drawable.icon_music_off);
@@ -400,7 +414,6 @@ public class MainActivity extends Activity {
 			return;
 		}
 		mIsStarted = false;
-		Log.i("puzzleDone", "puzzleDone");
 		if (mTimer != null) {
 			mTimer.cancel();
 		}
@@ -408,7 +421,7 @@ public class MainActivity extends Activity {
 
 		// check best time
 		boolean isBestTime = false;
-		SimpleDateFormat df = new SimpleDateFormat("mm:ss");
+		SimpleDateFormat df = new SimpleDateFormat(TIME_FORMAT);
 		String newTime = mTvTimeCounter.getText().toString();
 		String oldBestTime = mPuzzlePref.getString(KEY_BEST_TIME + mLevel, "59:59-username")
 				.substring(0, 5);
@@ -420,25 +433,20 @@ public class MainActivity extends Activity {
 			e.printStackTrace();
 		}
 
-		// Builder builder = new AlertDialog.Builder(this);
-		// String msg =
-		// String.format(getResources().getString(R.string.msg_your_time),
-		// mTvTimeCounter.getText());
-		// builder.setMessage(msg);
-		// builder.setPositiveButton("OK", new OnClickListener() {
-		//
-		// @Override
-		// public void onClick(DialogInterface dialog, int which) {
-		// dialog.dismiss();
-		//
-		// }
-		// });
-		// AlertDialog dialog = builder.show();
-		//
-		// TextView messageView = (TextView)
-		// dialog.findViewById(android.R.id.message);
-		// messageView.setGravity(Gravity.CENTER);
-
+		if (mBgSoundPlayer != null && mBgSoundPlayer.isPlaying()) {
+			mBgSoundPlayer.stop();
+		}
+		if (isBestTime) {
+			if (mSoundOn) {
+				MediaPlayer mpStart = MediaPlayer.create(this, R.raw.correct_best_time);
+				mpStart.start();
+			}
+		} else {
+			if (mSoundOn) {
+				MediaPlayer mpStart = MediaPlayer.create(this, R.raw.correct_ding);
+				mpStart.start();
+			}
+		}
 		showDialogSaveRecord(isBestTime);
 	}
 
@@ -468,6 +476,7 @@ public class MainActivity extends Activity {
 		if (isBestTime) {
 			TextView tvTitle = (TextView) dialog.findViewById(R.id.tvTitle);
 			tvTitle.setText(getResources().getString(R.string.congratulate));
+			tvTitle.setTextColor(getResources().getColor(R.color.red_500));
 		}
 
 		tvTimer.setText(String.format(getResources().getString(R.string.msg_your_time),
@@ -501,48 +510,18 @@ public class MainActivity extends Activity {
 			}
 		});
 
-		final int saveCount = mPuzzlePref.getInt(KEY_SAVE_COUNT, 0) + 1;
+		int saveCount = mPuzzlePref.getInt(KEY_SAVE_COUNT, 0) + 1;
 		mPuzzlePref.edit().putInt(KEY_SAVE_COUNT, saveCount).commit();
 		// show adv
-		if (mInterstitialAd.isLoaded()) {
-			Thread thread = new Thread(new Runnable() {
-
-				@Override
-				public void run() {
-					try {
-						Thread.sleep(3000);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-
-					if (saveCount < 20) {
-						if ((saveCount % 5) == 0) {
-							runOnUiThread(new Runnable() {
-
-								@Override
-								public void run() {
-									mInterstitialAd.show();
-								}
-							});
-						}
-					} else {
-						if ((saveCount % 3) == 0) {
-							runOnUiThread(new Runnable() {
-
-								@Override
-								public void run() {
-									mInterstitialAd.show();
-								}
-							});
-						}
-					}
-				}
-			});
-			thread.start();
+		if (saveCount < 20) {
+			if ((saveCount % 4) == 0) {
+				requestNewInterstitial();
+			}
 		} else {
-			requestNewInterstitial();
+			if ((saveCount % 3) == 0) {
+				requestNewInterstitial();
+			}
 		}
-
 	}
 
 	private void addNewRecord(String name) {
@@ -562,8 +541,6 @@ public class MainActivity extends Activity {
 				}
 
 				// Update rank time
-				// Set<String> setTopTime =
-				// sharedPrefScore.getStringSet(KEY_RANK_TIME + mLevel, null);
 				String rankTime = mPuzzlePref.getString(KEY_RANK_TIME + mLevel, "");
 				if (!rankTime.isEmpty()) {
 					String[] arrRank = rankTime.split(",");
@@ -590,37 +567,7 @@ public class MainActivity extends Activity {
 					Editor editor = mPuzzlePref.edit();
 					editor.putString(KEY_RANK_TIME + mLevel, newRankTime.toString());
 					editor.commit();
-
-					// ArrayList<String> listTopTime = new
-					// ArrayList<String>(setTopTime);
-					// for (String time : listTopTime) {
-					// Log.i("puzzleDone", time + " - string");
-					// if (df.parse(time.substring(0, 5)).getTime() >
-					// df.parse(newTime).getTime()) {
-					// listTopTime.add(listTopTime.indexOf(time), newTime + "-"
-					// + name);
-					// break;
-					// }
-					// }
-					//
-					// String longestTime = listTopTime.get(listTopTime.size() -
-					// 1);
-					// if (df.parse(newTime).getTime() >
-					// df.parse(longestTime.substring(0, 5)).getTime()) {
-					// listTopTime.add(newTime + "-" + name);
-					// }
-					//
-					// if (listTopTime.size() > 10) {
-					// listTopTime.remove(listTopTime.size() - 1);
-					// }
-					//
-					// Editor editor = sharedPrefScore.edit();
-					// editor.putStringSet(KEY_RANK_TIME + mLevel, new
-					// HashSet<String>(listTopTime));
-					// editor.commit();
 				} else {
-					// ArrayList<String> listTopTime = new ArrayList<String>();
-					// listTopTime.add(newTime + "-" + name);
 					String value = newTime + "-" + name;
 					Editor editor = mPuzzlePref.edit();
 					editor.putString(KEY_RANK_TIME + mLevel, value);
@@ -661,24 +608,39 @@ public class MainActivity extends Activity {
 	}
 
 	public void loseGame() {
+		if (mBgSoundPlayer != null && mBgSoundPlayer.isPlaying()) {
+			mBgSoundPlayer.stop();
+		}
+		if (mSoundOn) {
+			MediaPlayer mpStart = MediaPlayer.create(this, R.raw.time_out);
+			mpStart.start();
+		}
+		
 		if (mTimer != null) {
 			mTimer.cancel();
 		}
-		mBtnRandom.setEnabled(true);
-		mBtnStart.setEnabled(true);
-
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setMessage("You lose!");
-		builder.setCancelable(false);
-		builder.setPositiveButton("OK", new OnClickListener() {
+		runOnUiThread(new Runnable() {
 
 			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				dialog.dismiss();
+			public void run() {
+				mBtnRandom.setEnabled(true);
+				mBtnStart.setEnabled(true);
+				
+				AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+				builder.setMessage(R.string.msg_time_out);
+				builder.setCancelable(false);
+				builder.setPositiveButton(R.string.ok, new OnClickListener() {
+
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						dialog.dismiss();
+					}
+				});
+				AlertDialog alert = builder.create();
+				alert.show();
 			}
 		});
-		AlertDialog alert = builder.create();
-		alert.show();
+
 	}
 
 }

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Xếp Hình</string>
+    <string name="msg_your_time">Thời gian : %s</string>
+    <string name="congratulate">Chúc mừng! Bạn là người nhanh nhất !</string>
+    <string name="msg_you_done">Bạn đã hoàn thành!</string>
+    <string name="cancel">Hủy</string>
+    <string name="save">Lưu</string>
+    <string name="done">OK</string>
+    <string name="ok">OK</string>
+    <string name="your_name">Tên bạn : </string>
+    <string name="choose_level_and_photo">Chọn mức chơi và ảnh</string>
+    <string name="time_text">"Time: "</string>
+    <string name="best_time_text">"Best : "</string>
+    <string name="reset_text">Reset</string>
+    <string name="auto_text">Auto</string>
+    <string name="start_text">Start</string>
+    <string name="time_title_text">TIME</string>
+    <string name="user_title_text">NGƯỜI CHƠI</string>
+    <string name="easy_text">Dễ</string>
+    <string name="medium_text">Vừa</string>
+    <string name="hard_text">Khó</string>
+    <string name="easy_3x4_text">Dễ (3x4)</string>
+    <string name="medium_4x4_text">Vừa (4x4)</string>
+    <string name="hard_5x5_text">Khó (5x5)</string>
+    <string name="get_photo_from_gallery">Ảnh từ bộ sưu tập</string>
+    <string name="msg_time_out">Hết giờ!</string>
+    <string name="msg_error_photo">Ảnh lỗi!</string>
+    <string name="msg_something_wrong">Đã có lỗi khi lấy ảnh!</string>
+    <string name="msg_please_input_name">Bạn chưa điền tên!</string>
+    <string name="play_text">Chơi game</string>
+    <string name="high_score_text">Điểm cao</string>
+    <string name="game_started">Bắt đầu tính giờ!</string>
+    <string name="exit_app_title">Thoát game</string>
+    <string name="exit_text">Thoát</string>
+    <string name="rate_text">Đánh giá</string>
+    <string name="msg_rate_app">Chúc bạn có thời gian vui vẻ!</string>
+    <string name="crop_text">Cắt</string>
+    <string name="tut_auto_btn">Ấn nút này để xáo trộn ảnh.</string>
+    <string name="tut_start_btn">Ấn nút này để bắt đầu chơi.</string>
+    <string name="tut_reset_btn">Ấn nút này để trở về trạng thái ban đầu.</string>
+    <string name="tut_sound_btn">Ấn nút này để bật/tắt âm thanh.</string>
+    <string name="tut_music_btn">Ấn nút này để bật/tắt nhạc nền.</string>
+
+</resources>

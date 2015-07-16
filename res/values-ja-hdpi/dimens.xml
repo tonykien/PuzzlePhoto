@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-
-    <dimen name="btn_size_main">64dp</dimen>
-    <dimen name="btn_size_crop">80dp</dimen>
-
-</resources>

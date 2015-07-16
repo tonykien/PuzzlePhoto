@@ -25,12 +25,22 @@
     <string name="medium_4x4_text">ノーマル (4x4)</string>
     <string name="hard_5x5_text">ハード (5x5)</string>
     <string name="get_photo_from_gallery">ギャラリーから選択する</string>
-    <string name="msg_lose_game">あなたが失います！</string>
+    <string name="msg_time_out">タイムアウト！</string>
     <string name="msg_error_photo">エラーの写真!</string>
     <string name="msg_something_wrong">何かエラーが発生しました！</string>
-    <string name="msg_please_input_name">入力名してください！</string>
+    <string name="msg_please_input_name">お名前を入力してください！</string>
     <string name="play_text">ゲームスタート</string>
     <string name="high_score_text">ハイスコア</string>
     <string name="game_started">ゲームが開始します！</string>
+    <string name="exit_app_title">ゲーム終了</string>
+    <string name="exit_text">終了</string>
+    <string name="rate_text">評価</string>
+    <string name="msg_rate_app">このゲームが好きですか。</string>
+    <string name="crop_text">クロップ</string>
+    <string name="tut_auto_btn">このボタンを押す、写真が乱されます。</string>
+    <string name="tut_start_btn">このボタンを押す、ゲームが開始されます。</string>
+    <string name="tut_reset_btn">このボタンを押す、元の状況に戻ります。</string>
+    <string name="tut_sound_btn">このボタンを押す、音声がオン/オフになります。</string>
+    <string name="tut_music_btn">このボタンを押す、背景音楽がオン/オフになります。</string>
 
 </resources>

@@ -20,13 +20,10 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:layout_marginTop="6dp"
-            android:layout_marginBottom="6dp"
-            android:layout_marginLeft="10dp"
+            android:layout_margin="8dp"
             android:onClick="onBtnCancelClick"
-            android:background="@drawable/fab_shape_rect_crop_screen"
-            android:text="@string/cancel"
-            android:textColor="@color/app_color" />
+            android:background="@drawable/flat_cancel_btn_selector"
+            android:text="@string/cancel" />
 
         <Button
             android:id="@+id/btnDone"
@@ -36,12 +33,10 @@
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
-            android:layout_marginTop="6dp"
-            android:layout_marginBottom="6dp"
-            android:layout_marginRight="10dp"
-            android:background="@drawable/fab_shape_rect_crop_screen"
+            android:layout_margin="8dp"
+            android:background="@drawable/flat_cancel_btn_selector"
             android:onClick="onBtnDoneClick"
-            android:text="@string/done"
+            android:text="@string/crop_text"
             android:textColor="@color/app_color"
             android:textStyle="bold" />
 

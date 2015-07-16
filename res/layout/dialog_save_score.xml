@@ -24,7 +24,7 @@
             android:layout_centerHorizontal="true"
             android:text="@string/msg_you_done"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="@android:color/black"
+            android:textColor="@color/app_color"
             android:textStyle="bold" />
 
         <TextView

@@ -7,24 +7,19 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Paint.Style;
-import android.graphics.Path;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.os.SystemClock;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
 import com.tonyk.puzzlephoto.BitmapObject;
+import com.tonyk.puzzlephoto.R;
 import com.tonyk.puzzlephoto.activity.MainActivity;
-import com.tonyk.translatephoto.R;
 
 public class PhotoViewCustom extends View implements View.OnTouchListener {
 
-	private final static String TAG = "PhotoViewCustom";
-	
 	private Context mContext;
 	private ArrayList<BitmapObject> mListBmp = new ArrayList<BitmapObject>();
 	private Paint mPaint = new Paint();
@@ -41,8 +36,6 @@ public class PhotoViewCustom extends View implements View.OnTouchListener {
 	private SoundPool mSoundPool;
 	private int mSoundId;
 	private boolean mSoundOn = true;
-	private Path mBorderPath = new Path();
-	private boolean mDrawedBorderFrame = false;
 
 	public PhotoViewCustom(Context context) {
 		super(context);
@@ -101,54 +94,19 @@ public class PhotoViewCustom extends View implements View.OnTouchListener {
 		mRandomNumber = randNum;
 	}
 	
-	private void drawBorderFrame(Canvas canvas) {
-		Log.i("drawBorderFrame", "drawBorderFrame");
-		mBorderPath.moveTo(mEmptyX - MainActivity.BORDER_SIZE, mEmptyY - MainActivity.BORDER_SIZE);
-		mBorderPath.lineTo(mEmptyX + MainActivity.BORDER_SIZE + mBmpSize, mEmptyY - MainActivity.BORDER_SIZE);
-		mBorderPath.lineTo(mEmptyX + MainActivity.BORDER_SIZE + mBmpSize, mEmptyY - MainActivity.BORDER_SIZE + mBmpSize);
-		mBorderPath.lineTo(mEmptyX + MainActivity.BORDER_SIZE + mBmpSize * mColumn, mEmptyY - MainActivity.BORDER_SIZE + mBmpSize);
-		mBorderPath.lineTo(mEmptyX + MainActivity.BORDER_SIZE + mBmpSize * mColumn, mEmptyY + MainActivity.BORDER_SIZE + mBmpSize * (mRow + 1));
-		mBorderPath.lineTo(mEmptyX - MainActivity.BORDER_SIZE, mEmptyY + MainActivity.BORDER_SIZE + mBmpSize * (mRow + 1));
-		mBorderPath.lineTo(mEmptyX - MainActivity.BORDER_SIZE, mEmptyY - MainActivity.BORDER_SIZE);
-		
-		mPaintWhite.setStrokeWidth(MainActivity.BORDER_SIZE);
-		mPaintWhite.setStyle(Paint.Style.STROKE);
-		canvas.drawPath(mBorderPath, mPaintWhite);
-		// mPaintWhite.setStyle(Style.FILL);
-		
-	}
-
 	@Override
 	protected void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
-		// draw border frame
-//		if (!mDrawedBorderFrame) {
-//			drawBorderFrame(canvas);
-//			mDrawedBorderFrame = true;
-//		}
 		for (BitmapObject bObj : mListBmp) {
 			canvas.drawBitmap(bObj.getBmp(), bObj.getX(), bObj.getY(), mPaint);
 		}
 		canvas.drawRect(mEmptyX, mEmptyY, mEmptyX + mBmpSize, mEmptyY + mBmpSize, mPaintWhite);
 		canvas.drawRect(mEmptyX + MainActivity.BORDER_SIZE * 2, mEmptyY + MainActivity.BORDER_SIZE * 2,
 				mEmptyX + mBmpSize - MainActivity.BORDER_SIZE * 2, mEmptyY + mBmpSize - MainActivity.BORDER_SIZE * 2, mPaintEmpty);
-		// mEmptyPath.reset();
-		// mEmptyPath.moveTo(mEmptyX + MainActivity.BORDER_SIZE * 2, mEmptyY +
-		// MainActivity.BORDER_SIZE * 2);
-		// mEmptyPath.lineTo(mEmptyX + mBmpSize - MainActivity.BORDER_SIZE * 2,
-		// mEmptyY + MainActivity.BORDER_SIZE * 2);
-		// mEmptyPath.lineTo(mEmptyX + mBmpSize - MainActivity.BORDER_SIZE * 2,
-		// mEmptyY + mBmpSize - MainActivity.BORDER_SIZE * 2);
-		// mEmptyPath.lineTo(mEmptyX + MainActivity.BORDER_SIZE * 2, mEmptyY +
-		// mBmpSize - MainActivity.BORDER_SIZE * 2);
-		// mEmptyPath.lineTo(mEmptyX + MainActivity.BORDER_SIZE * 2, mEmptyY +
-		// MainActivity.BORDER_SIZE * 2);
-		// canvas.drawPath(mEmptyPath, mPaintEmpty);
 	}
 
 	@Override
 	public boolean onTouch(View v, MotionEvent event) {
-		Log.d(TAG, "onTouch");
 		// get index of touch
 		int index = -1;
 		float x = event.getX();
@@ -178,7 +136,6 @@ public class PhotoViewCustom extends View implements View.OnTouchListener {
 				// translate
 				if (touchedObj.isCanTranslate()) {
 					// play sound
-					// playSoundEffect(SoundEffectConstants.CLICK);
 					if (mSoundOn) {
 						mSoundPool.play(mSoundId, 1, 1, 1, 0, 1);
 					}
@@ -199,7 +156,6 @@ public class PhotoViewCustom extends View implements View.OnTouchListener {
 					} else if (index == touchedObj.getOriIndex()){
 						mWrongCount++;
 					}
-					Log.i(TAG, "wrong count:" + mWrongCount);
 					updateCanTranslateObj(mEmptyIndex);
 					
 					invalidate();

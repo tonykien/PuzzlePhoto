@@ -9,7 +9,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +16,7 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.tonyk.translatephoto.R;
+import com.tonyk.puzzlephoto.R;
 
 public class RankTimeFragment extends Fragment {
 
@@ -48,8 +47,6 @@ public class RankTimeFragment extends Fragment {
 			HSListAdapter adapter = new HSListAdapter(Arrays.asList(arrRank));
 			lvHighScore.setAdapter(adapter);
 
-		} else {
-			Log.i("", "pref null");
 		}
 
 		return rootView;
